@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Super Calc</title>
+    <link rel="stylesheet" href="./css/calc.css">
+    <link rel="stylesheet" href="./css/icofont/icofont.min.css">
+</head>
+
+<body>
+    <main>
+        <div id="calc-body">
+            <section id="name-section">
+                <p id="calc-name">Multipurpose Calculator</p>
+                <div id="battery-level">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </section>
+            <section id="screen">
+                <div id="top-screen">
+                    <p>Date</p>
+                </div>
+                <div id="entered-text">
+                    <p>10m &rightarrow; cm</p>
+                </div>
+                <div id="result">
+                    <p>1,000cm</p>
+                </div>
+            </section>
+            <section id="control-keys">
+                <div id="modes">
+                    <span id="mode-label">MODES</span>
+                    <p class="key" data-value="date">Date</p>
+                    <p class="key" data-value="time">Time</p>
+                    <p class="key" data-value="num">Num</p>
+                    <p class="key" data-value="conv">Conv</p>
+                </div>
+                <div id="direction-pad">
+                    <span id="up-btn"><i class="icofont-ui-play"></i></span>
+                    <span id="down-btn"><i class="icofont-ui-play"></i></span>
+                    <span id="left-btn"><i class="icofont-ui-play"></i></span>
+                    <span id="right-btn"><i class="icofont-ui-play"></i></span>
+                    <div> </div>
+                </div>
+                <div id="power-section">
+                        <p class="key" id="color-mode"><i class="icofont-eclipse"></i></p>
+                        <p class="key" id="power-btn"><i class="icofont-ui-power"></i></p>
+                        <p class="key" id="clear-every-btn">CE</p>
+                        <p class="key" id="clear-btn">C</p>
+                </div>
+            </section>
+            <section id="other-keys">
+                <div id="num-calc-btns">
+                    <div class="key" data-value="+"><span>+</span></div>
+                    <div class="key" data-value="-"><span>&#8210;</span></div>
+                    <div class="key" data-value=""><span></span></div>
+                    <div class="key" data-value=""><span></span></div>
+                    <div class="key" data-value=""><span></span></div>
+                    <div class="key" id="backspace-btn" data-value="Backspace"><span>&larr;</span></div>
+                    <div class="key" data-value="SQR"><span>x<sup>2</sup></span></div>
+                    <div class="key" data-value="*"><span>&times;</span></div>
+                    <div class="key" data-value="/"><span>&divide;</span></div>
+                    <div class="key" data-value="7"><span>7</span></div>
+                    <div class="key" data-value="8"><span>8</span></div>
+                    <div class="key" data-value="9"><span>9</span></div>
+                    <div class="key" data-value="cube"><span>x<sup>3</sup></span></div>
+                    <div class="key" data-value="SQRT"><span>&radic;</span></div>
+                    <div class="key" data-value="("><span>(</span></div>
+                    <div class="key" data-value=")"><span>)</span></div>
+                    <div class="key" data-value="4"><span>4</span></div>
+                    <div class="key" data-value="5"><span>5</span></div>
+                    <div class="key" data-value="6"><span>6</span></div>
+                    <div class="key" data-value="cuberoot"><span>&#8731;</span></div>
+                    <div class="key" data-value="power-nth"><span>n<sup>th</sup></span></div>
+                    <div class="key" data-value="factorial"><span>n!</span></div>
+                    <div class="key" data-value="%"><span>%</span></div>
+                    <div class="key" data-value="1"><span>1</span></div>
+                    <div class="key" data-value="2"><span>2</span></div>
+                    <div class="key" data-value="3"><span>3</span></div>
+                    <div class="key" data-value="nth-root"><span><sup>n</sup>&radic;</span></div>
+                    <div class="key" data-value="sin"><span>sin</span></div>
+                    <div class="key" data-value="pi"><span>&pi;</span></div>
+                    <div class="key" data-value="log"><span>log</span></div>
+                    <div class="key" data-value="."><span>.</span></div>
+                    <div class="key" data-value="0"><span>0</span></div>
+                    <div class="key" data-value="plus-minus"><span>&plusmn;</span></div>
+                    <div class="key" data-value="cos"><span>cos</span></div>
+                    <div class="key" data-value="tan"><span>tan</span></div>
+                    
+                </div>
+                <div id="date-time-calc-btns">
+                    <div class="keys" data-value="ms"><span>ms</span></div>
+                    <div class="keys" data-value="s"><span>s</span></div>
+                    <div class="keys" data-value="min"><span>min</span></div>
+                    <div class="keys" data-value="hr"><span>hr</span></div>
+                    <div class="keys" data-value="day"><span>day</span></div>
+                    <div class="keys" data-value="wk"><span>wk</span></div>
+                    <div class="keys" data-value="mth"><span>mth</span></div>
+                    <div class="keys" data-value="yr"><span>yr</span></div>
+                    <div class="keys" data-value="cen"><span>cen</span></div>
+                    <div class="keys" data-value="mill"><span>mill</span></div>
+                    <div class="keys" data-value="lt yr"><span>lt-yr</span></div>
+                    <div class="keys" data-value=","><span>-</span></div>
+                    <div class="keys" data-value=":"><span>:</span></div>
+                    <div class="keys" data-value="now"><span>now</span></div>
+                </div>
+                <div id="conversion-cal-keys">
+                    <div class="keys" data-value="mm"><span>mm</span></div>
+                    <div class="keys" data-value="cm"><span>cm</span></div>
+                    <div class="keys" data-value="km"><span>km</span></div>
+                    <div class="keys" data-value="yrd"><span>yrd</span></div>
+                    <div class="keys" data-value="mile"><span>mile</span></div>
+                    <div class="keys" data-value="foot"><span>foot</span></div>
+                    <div class="keys" data-value="inches"><span>in</span></div>
+                    <div class="keys" data-value="micrometer"><span>&#xb5;m</span></div>
+                    <div class="keys" data-value="nanometer"><span>nm</span></div>
+                    <div class="keys" data-value="nautical"><span>nmi</span></div>
+                    <div class="keys" data-value="hectometer"><span>hm</span></div>
+                    <div class="keys" data-value="to"><span>&rarr;</span></div>
+                    <!-- <div class="keys" data-value=":"><span>:</span></div> -->
+                    <div class="keys" id="equals-btn" data-value="equal"><span>&equals;</span></div>
+
+                </div>
+            </section>
+            <section id="calc-model">
+                <p>SemanticTSK</p>
+            </section>
+        </div>
+    </main>
+    <script src="./calc.js"></script>
+</body>
+</html>
