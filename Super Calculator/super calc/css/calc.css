@@ -1,7 +1,12 @@
 :root {
   /* night mode colors */
-  --night-bg-color: #0e0e0e;
-  --night-txt-color: blue;
+  --bg-color: #000;
+  --calc-body-color: linear-gradient(180deg, #0e0e0e, #333333);
+  --text-color-keys: #000;
+  --screen-color: aqua;
+  --screen-box-shadow: inset 0 2px 10px 1px #018874;  
+  --button-color: #fff;
+  --mode-label-color: #1b1b1b;
 }
 
 html,
@@ -16,14 +21,15 @@ body {
   width: 100vw;
   height: 100vh;
   line-height: 1.5;
-  background-color: #eee;
+  background-color: var(--bg-color);
   font-size: 1.1em;
+  color: var(--text-color-keys);
 }
 main {
-  background-color: black;
+  background-color: var(--bg-color);
 }
 #calc-body {
-  background: linear-gradient(180deg, #0e0e0e, #333333);
+  background: var(--calc-body-color);
   border-radius: 1.5em;
   margin: 0 auto;
   padding: 1em;
@@ -60,10 +66,9 @@ main {
 }
 
 #screen {
-  background-color: aqua;
-  box-shadow: inset 0 2px 10px 1px #018874;
+  background-color: var(--screen-color);
+  box-shadow: var(--screen-box-shadow);
   border-radius: 0.6em;
-  /* height: 150px; */
   padding: 0.8em;
   line-height: 2;
   margin: 1em 0;
@@ -72,7 +77,6 @@ main {
 #top-screen {
   margin-top: -0.5em;
   display: flex;
-  /* justify-content: space-evenly; */
 }
 
 #top-screen * {
@@ -90,13 +94,29 @@ main {
   margin-top: 1em;
   font-size: 1.5em;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #000;
 }
 
+#entered-text #blinking-cursor{
+  font-weight: 900;
+  font-family:Arial, Helvetica, sans-serif;
+  color: #000;
+  animation: blink 0.7s linear infinite;
+}
+@keyframes blink{
+  0%{
+    color: #000;
+  }
+  100%{
+    color: transparent;
+  }
+}
 #result {
-  margin-bottom: -0.8em;
+  margin-bottom: -0.6em;
   text-align: end;
   font-size: 1.5em;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #000;
 }
 
 #control-keys {
@@ -109,7 +129,7 @@ main {
 #power-section {
   position: relative;
   border-radius: 0.6em;
-  border: 1px solid #f89999ac;;
+  border: 1px solid #b65151;
   width: calc((80% +2em) / 3);
   display: flex;
   flex-wrap: wrap;
@@ -122,23 +142,26 @@ main {
 }
 
 #mode-label {
-  color: #f89999ac;
+  color: #b65151;
   position: absolute;
   font-size: 0.6em;
   top: -0.8em;
-  background-color: #1b1b1b;
+  background-color: var(--mode-label-color);
   padding: 0 0.4em;
   left: 25%;
 }
 
 #modes p,
 #power-section p {
-  font-size: 0.8em;
   display: block;
   line-height: 1.5;
   margin: 0.3em 0;
   width: 3em;
   text-align: center;
+  color: #000;
+}
+#modes p{
+  font-size: 0.75em;
 }
 #power-section p,
 #num-calc-btns div {
@@ -194,7 +217,6 @@ main {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  box-shadow: 0 3px 0 1px #2f2f2f;
 }
 
 #direction-pad span{
@@ -225,7 +247,7 @@ main {
   height: 40px;
   width: 40px;
   border-radius: 50%;
-  box-shadow: inset 0 2px 0 2px #1f1f1f, 0 0 20px 1px black;
+  box-shadow: 0 0 20px 1px black;
 }
 
 #num-calc-btns,
@@ -236,7 +258,6 @@ main {
   flex-wrap: wrap;
   border-radius: 0.5em;
   justify-content: space-between;
-  /* height: 150px; */
   margin-bottom: 0.2em;
 }
 #num-calc-btns {
@@ -251,12 +272,14 @@ main {
     0% 100%
   );
   border: 1px solid rgba(16, 145, 200, 0.537);
+  position: relative;
+  margin-top: 0.5em;
 }
 
 #num-calc-btns div,
 #date-time-calc-btns div,
 #conversion-cal-keys div {
-  background-color: white;
+  background-color: var(--button-color);
   margin: 0.3em 0.3em 0.2em 0;
   line-height: 1.3;
   display: flex;
@@ -269,7 +292,6 @@ main {
 #conversion-cal-keys div {
   font-size: 0.8em;
   width: 3em;
-  /* text-transform: capitalize; */
 }
 
 #date-time-calc-btns {
@@ -283,10 +305,9 @@ main {
 .key {
   height: 1.5em;
   border-radius: 0.3em;
-  /* box-shadow: 0 0 2px rgb(0, 0, 0); */
   cursor: pointer;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 500;
+  font-weight: 500;  
 }
 
 #calc-model {
@@ -296,10 +317,18 @@ main {
   font-weight: 700;
 }
 
-.keys:hover,
-.key:hover{
-  transform: scale(0.9);
-}
 #equals-btn{
   flex: 0.81;
+}
+
+@keyframes button{
+  0%{
+    transform: scale(1);
+  }
+  50%{
+    transform: scale(0.9);
+  }
+  100%{
+    transform: scale(1);
+  }
 }
