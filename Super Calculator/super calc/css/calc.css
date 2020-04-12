@@ -72,6 +72,7 @@ main {
   padding: 0.8em;
   line-height: 2;
   margin: 1em 0;
+  height: 150px;
 }
 
 #top-screen {
@@ -317,8 +318,9 @@ main {
   font-weight: 700;
 }
 
-#equals-btn{
+#conversion-cal-keys #equals-btn{
   flex: 0.81;
+  /* background-color: rgb(70, 146, 70); rgb(98, 255, 98);*/
 }
 
 @keyframes button{
