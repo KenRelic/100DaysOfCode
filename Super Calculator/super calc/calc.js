@@ -81,6 +81,7 @@ window.onload = function() {
   screenVariables().get_calc_screen().style.boxShadow =
     "inset 0 2px 10px 1px #111";
   screenVariables().get_top_screen().style.visibility = "hidden";
+  screenVariables().get_cursor().style.visibility = "hidden";
 
   //listen for keypress and pass it into the input area//
   key_press_active();
@@ -99,6 +100,8 @@ power_btn.addEventListener("click", () => {
     state_data[localStorage.power_state][1];
   screenVariables().get_top_screen().style.visibility =
     state_data[localStorage.power_state][0];
+  screenVariables().get_cursor().style.visibility =
+    state_data[localStorage.power_state][0];
 });
 
 //SCREEN VARIABLES //
@@ -107,6 +110,7 @@ function screenVariables() {
   let result_area = document.getElementById("result");
   let calc_screen = document.getElementById("screen");
   let top_screen_area = document.getElementById("top-screen");
+  let cursor = document.getElementById("blinking-cursor");
 
   return {
     get_input_area: () => {
@@ -120,6 +124,9 @@ function screenVariables() {
     },
     get_top_screen: () => {
       return top_screen_area;
+    },
+    get_cursor: () => {
+      return cursor;
     }
   };
 }
@@ -175,12 +182,27 @@ function key_press_active() {
   let button = document.getElementById("other-keys");
   button.onclick = function(event) {
     let el = event.target;
-    console.log(localStorage.power_state);
+    // console.log(localStorage.power_state);
     if (localStorage.power_state == "ON") {
-      console.log(el.dataset.value);
-      if (el.innerHTML !== "") {
-        screenVariables().get_input_area().innerHTML = el.innerHTML;
+      // console.log(el.dataset.value);
+      if (el.innerHTML !== "" && el.innerHTML.length < 7) {
+        if(el.dataset.value == 'Backspace') erase_input();
+        else if(el.dataset.value == 'equal'){
+
+        }else{
+          screenVariables().get_input_area().innerHTML += el.dataset.value;
+        }
+        
       }
     }
   };
 }
+
+//CLEAR TEXT ON CLICK OF BACKSPACE BUTTON
+// ON click of the button, the last innerHTML is removed and put back
+
+function erase_input(){
+  let displayed_text = screenVariables().get_input_area().innerHTML;  
+  return screenVariables().get_input_area().innerHTML = displayed_text.slice(0, displayed_text.length - 1);
+}
+

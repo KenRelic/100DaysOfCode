@@ -73,6 +73,7 @@ main {
   line-height: 2;
   margin: 1em 0;
   height: 150px;
+  overflow: hidden;
 }
 
 #top-screen {
