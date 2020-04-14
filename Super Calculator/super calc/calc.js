@@ -85,6 +85,7 @@ window.onload = function() {
 
   //listen for keypress and pass it into the input area//
   key_press_active();
+  mode_switch();
 };
 
 //add a power toggle event to the power btn
@@ -111,6 +112,8 @@ function screenVariables() {
   let calc_screen = document.getElementById("screen");
   let top_screen_area = document.getElementById("top-screen");
   let cursor = document.getElementById("blinking-cursor");
+  let conversion_mode = document.getElementById("coversion-mode");
+  let calc_mode = document.getElementById("calc-mode");
 
   return {
     get_input_area: () => {
@@ -127,6 +130,12 @@ function screenVariables() {
     },
     get_cursor: () => {
       return cursor;
+    },
+    get_conv_mode: () => {
+      return conversion_mode;
+    },
+    get_calc_mode: () => {
+      return calc_mode;
     }
   };
 }
@@ -185,14 +194,12 @@ function key_press_active() {
     // console.log(localStorage.power_state);
     if (localStorage.power_state == "ON") {
       // console.log(el.dataset.value);
-      if (el.innerHTML !== "" && el.innerHTML.length < 7) {
-        if(el.dataset.value == 'Backspace') erase_input();
-        else if(el.dataset.value == 'equal'){
-
-        }else{
+      if (el.dataset.value) {
+        if (el.dataset.value == "Backspace") erase_input();
+        else if (el.dataset.value == "equal") {
+        } else {
           screenVariables().get_input_area().innerHTML += el.dataset.value;
         }
-        
       }
     }
   };
@@ -201,8 +208,67 @@ function key_press_active() {
 //CLEAR TEXT ON CLICK OF BACKSPACE BUTTON
 // ON click of the button, the last innerHTML is removed and put back
 
-function erase_input(){
-  let displayed_text = screenVariables().get_input_area().innerHTML;  
-  return screenVariables().get_input_area().innerHTML = displayed_text.slice(0, displayed_text.length - 1);
+function erase_input() {
+  let displayed_text = screenVariables().get_input_area().innerHTML;
+  return (screenVariables().get_input_area().innerHTML = displayed_text.slice(
+    0,
+    displayed_text.length - 1
+  ));
+}
+
+//CLEAR EVERYTHING BUTTON CODE
+//Clears  all input data and any previous result still displayed
+let clear_all_btn = document.getElementById("cancel");
+clear_all_btn.addEventListener("click", clear_all);
+function clear_all() {
+  screenVariables().get_input_area().innerHTML = "";
+  screenVariables().get_result_area().innerHTML = "";
+}
+
+//Display calculation mode//
+function mode_switch() {
+  let conv_units = ["length", "mass", "volume", "energy", "area"];
+  let count = 0;
+  let mode_area = document.getElementById("modes");
+  mode_area.addEventListener("click", click_check);
+  function click_check(event) {
+    let el = event.target;
+    if (localStorage.power_state == "ON") {
+      if (el.dataset.value) {
+        screenVariables().get_calc_mode().innerHTML = el.dataset.value;
+        if (el.dataset.value == "conv") {
+          screenVariables().get_conv_mode().innerHTML = conv_units[count];
+          screenVariables().get_conv_mode().style.visibility = "visible";
+          count === conv_units.length - 1 ? (count = 0) : (count += 1);
+        } else {
+          count = 0;
+          screenVariables().get_conv_mode().style.visibility = "hidden";
+        }
+      }
+    }
+  }
+}
+
+//clear recent input
+let clear_btn = document.getElementById("clear-recent-input");
+clear_btn.addEventListener("click", clear);
+function clear() {
+  let operators = ["-", "+", "/", "×", "(", ")"];
+  let inputed_data = screenVariables().get_input_area().innerHTML;
+  let last_operator;
+
+  last_operator = operators.reduce((last, op) => {
+    return (last =
+      inputed_data.lastIndexOf(last) > inputed_data.lastIndexOf(op)
+        ? last
+        : op);
+  });
+  if (inputed_data.lastIndexOf(last_operator) !== -1) {
+    let start_index = inputed_data.lastIndexOf(last_operator);
+    return (screenVariables().get_input_area().innerHTML = inputed_data.slice(
+      0,
+      start_index + 1
+    ));
+  }
 }
 
