@@ -4,7 +4,7 @@
   --calc-body-color: linear-gradient(180deg, #0e0e0e, #333333);
   --text-color-keys: #000;
   --screen-color: aqua;
-  --screen-box-shadow: inset 0 2px 10px 1px #018874;  
+  --screen-box-shadow: inset 0 2px 10px 1px #018874;
   --button-color: #fff;
   --mode-label-color: #1b1b1b;
 }
@@ -25,9 +25,11 @@ body {
   font-size: 1.1em;
   color: var(--text-color-keys);
 }
+
 main {
   background-color: var(--bg-color);
 }
+
 #calc-body {
   background: var(--calc-body-color);
   border-radius: 1.5em;
@@ -60,9 +62,10 @@ main {
 #battery-level div {
   width: 0.6em;
   height: 0.6em;
-  background-color: rgb(62, 255, 156);
-  border-radius: 50%;
-  margin-left: 0.3em;
+  background: linear-gradient( 270deg,rgb(62, 255, 156) 0%, rgb(35, 46, 40) 0%);
+    /* background-color: rgb(62, 255, 156); */
+    border-radius: 50%;
+  margin-left: 0.2em;
 }
 
 #screen {
@@ -88,14 +91,16 @@ main {
   line-height: 1;
   border-radius: 0.3em;
   color: rgb(71, 65, 236);
-  font-size:0.7em;
+  font-size: 0.7em;
   font-family: 'Times New Roman', Times, serif;
 }
-#coversion-mode{
+
+#conversion-mode {
   background-color: rgb(66, 10, 92);
   color: rgb(168, 115, 233);
   visibility: hidden;
 }
+
 #entered-text {
   margin-top: 1em;
   font-size: 1.5em;
@@ -103,20 +108,23 @@ main {
   color: #000;
 }
 
-#entered-text #blinking-cursor{
+#entered-text #blinking-cursor {
   font-weight: 900;
-  font-family:Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   color: #000;
   animation: blink 0.7s linear infinite;
 }
-@keyframes blink{
-  0%{
+
+@keyframes blink {
+  0% {
     color: #000;
   }
-  100%{
+
+  100% {
     color: transparent;
   }
 }
+
 #result {
   margin-bottom: -0.6em;
   text-align: end;
@@ -143,6 +151,7 @@ main {
   padding: 0.5em;
   justify-content: space-between;
 }
+
 #power-section {
   border: 1px solid #626262;
 }
@@ -166,9 +175,11 @@ main {
   text-align: center;
   color: #000;
 }
-#modes p{
+
+#modes p {
   font-size: 0.75em;
 }
+
 #power-section p,
 #num-calc-btns div {
   font-size: 0.9em;
@@ -181,18 +192,22 @@ main {
 #power-section p:nth-of-type(2) {
   background-color: rgb(12, 12, 12);
 }
-#power-section p:nth-of-type(1){
+
+#power-section p:nth-of-type(1) {
   color: #688681;
 }
+
 #power-section p:nth-of-type(2) {
   color: red;
 }
+
 #power-section p:nth-of-type(3) {
   background-color: #ee4a09;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 600;
   color: white;
 }
+
 #power-section p:nth-of-type(4) {
   background-color: #eeb109;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -203,12 +218,15 @@ main {
 #modes p:nth-of-type(1) {
   background-color: rgb(255, 217, 0);
 }
+
 #modes p:nth-of-type(2) {
   background-color: rgb(255, 0, 208);
 }
+
 #modes p:nth-of-type(3) {
   background-color: rgb(0, 157, 255);
 }
+
 #modes p:nth-of-type(4) {
   background-color: rgb(0, 255, 145);
 }
@@ -225,30 +243,34 @@ main {
   border-radius: 50%;
 }
 
-#direction-pad span{
+#direction-pad span {
   position: absolute;
   color: #222222;
   font-size: 0.8em;
   cursor: pointer;
 }
-#up-btn{
+
+#up-btn {
   top: 0.2em;
   transform: rotate(270deg);
 }
-#down-btn{
+
+#down-btn {
   bottom: 0.2em;
   transform: rotate(90deg);
 }
-#right-btn{
+
+#right-btn {
   right: 0.2em;
   transform: rotate(360deg);
 }
-#left-btn{
+
+#left-btn {
   left: 0.2em;
   transform: rotate(180deg);
 }
 
-#direction-pad > div {
+#direction-pad>div {
   background-color: rgb(61, 61, 61);
   height: 40px;
   width: 40px;
@@ -266,17 +288,16 @@ main {
   justify-content: space-between;
   margin-bottom: 0.2em;
 }
+
 #num-calc-btns {
-  clip-path: polygon(
-    0% 0%,
-    28% 0%,
-    28% 22%,
-    72% 22%,
-    72% 0%,
-    100% 0%,
-    100% 100%,
-    0% 100%
-  );
+  clip-path: polygon(0% 0%,
+      28% 0%,
+      28% 22%,
+      72% 22%,
+      72% 0%,
+      100% 0%,
+      100% 100%,
+      0% 100%);
   border: 1px solid rgba(16, 145, 200, 0.537);
   position: relative;
   margin-top: 0.5em;
@@ -303,6 +324,7 @@ main {
 #date-time-calc-btns {
   border: 1px solid rgba(228, 18, 147, 0.469);
 }
+
 #conversion-cal-keys {
   border: 1px solid rgba(18, 228, 119, 0.476);
 }
@@ -313,7 +335,7 @@ main {
   border-radius: 0.3em;
   cursor: pointer;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 500;  
+  font-weight: 500;
 }
 
 #calc-model {
@@ -321,21 +343,24 @@ main {
   font-size: 0.7em;
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   font-weight: 700;
+  text-align: end;
 }
 
-#conversion-cal-keys #equals-btn{
+#conversion-cal-keys #equals-btn {
   flex: 0.81;
   /* background-color: rgb(70, 146, 70); rgb(98, 255, 98);*/
 }
 
-@keyframes button{
-  0%{
+@keyframes button {
+  0% {
     transform: scale(1);
   }
-  50%{
+
+  50% {
     transform: scale(0.9);
   }
-  100%{
+
+  100% {
     transform: scale(1);
   }
 }

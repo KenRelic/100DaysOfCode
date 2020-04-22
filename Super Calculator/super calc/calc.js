@@ -70,7 +70,7 @@ function button_effect(e) {
 //change the screen color to dark grey.
 
 //set the power state to OFF on load.
-window.onload = function() {
+window.onload = function () {
   let localStorage = window.localStorage;
   localStorage.setItem("power_state", "OFF");
 
@@ -103,40 +103,32 @@ power_btn.addEventListener("click", () => {
     state_data[localStorage.power_state][0];
   screenVariables().get_cursor().style.visibility =
     state_data[localStorage.power_state][0];
+  screenVariables().get_result_area().style.visibility =
+    state_data[localStorage.power_state][0];
+  if (localStorage.power_state == 'OFF') {
+    screenVariables().get_conv_mode().style.visibility = 'hidden';
+    screenVariables().get_calc_mode().innerHTML = 'num';
+  }
 });
 
 //SCREEN VARIABLES //
 function screenVariables() {
   let input_area = document.getElementById("input-area");
-  let result_area = document.getElementById("result");
+  let result_area = document.querySelector("#result>p");
   let calc_screen = document.getElementById("screen");
   let top_screen_area = document.getElementById("top-screen");
   let cursor = document.getElementById("blinking-cursor");
-  let conversion_mode = document.getElementById("coversion-mode");
+  let conversion_mode = document.getElementById("conversion-mode");
   let calc_mode = document.getElementById("calc-mode");
 
   return {
-    get_input_area: () => {
-      return input_area;
-    },
-    get_result_area: () => {
-      return result_area;
-    },
-    get_calc_screen: () => {
-      return calc_screen;
-    },
-    get_top_screen: () => {
-      return top_screen_area;
-    },
-    get_cursor: () => {
-      return cursor;
-    },
-    get_conv_mode: () => {
-      return conversion_mode;
-    },
-    get_calc_mode: () => {
-      return calc_mode;
-    }
+    get_input_area: () => input_area,
+    get_result_area: () => result_area,
+    get_calc_screen: () => calc_screen,
+    get_top_screen: () => top_screen_area,
+    get_cursor: () => cursor,
+    get_conv_mode: () => conversion_mode,
+    get_calc_mode: () => calc_mode
   };
 }
 
@@ -189,7 +181,7 @@ color_mode_toggle_btn.addEventListener("click", () => {
 
 function key_press_active() {
   let button = document.getElementById("other-keys");
-  button.onclick = function(event) {
+  button.onclick = function (event) {
     let el = event.target;
     // console.log(localStorage.power_state);
     if (localStorage.power_state == "ON") {
@@ -199,17 +191,79 @@ function key_press_active() {
         else if (el.dataset.value == "equal") {
         } else {
           screenVariables().get_input_area().innerHTML += el.dataset.value;
+          input_handler().set_input(el.dataset.value);
         }
       }
     }
   };
 }
 
+function input_handler() {
+  let inputed_data;
+
+  return {
+    set_input: (input) => { inputed_data = input },
+    get_input: () => inputed_data
+  };
+}
+
+String.prototype.entitify = function (input) {
+  let entities = {
+    log: "Math.log",
+    sin: "Math.sin",
+    cos: "Math.cos",
+    tan: "Math.tan",
+    π: "Math.PI",
+    "√": "Math.sqrt",
+    "∛": "**(1/3)",
+    // "n√": `**${1 / number}`,
+    // "^": `**${number}`
+  };
+  return entities[input];
+};
 //CLEAR TEXT ON CLICK OF BACKSPACE BUTTON
 // ON click of the button, the last innerHTML is removed and put back
 
 function erase_input() {
   let displayed_text = screenVariables().get_input_area().innerHTML;
+  let units = [
+    "cos",
+    "tan",
+    "sin",
+    "log",
+    "ms",
+    "min",
+    "hr",
+    "wk",
+    "day",
+    "mth",
+    "yr",
+    "mill",
+    "cen",
+    "lt-Yr",
+    "now",
+    "mm",
+    "km",
+    "cm",
+    "mile",
+    "ft",
+    "yrd",
+    "in",
+    "nm",
+    "nmi",
+    "hm",
+    "µm"
+  ];
+  let i;
+
+  for (i = 0; i < units.length; i += 1) {
+    if (displayed_text.endsWith(units[i])) {
+      return (screenVariables().get_input_area().innerHTML = displayed_text.slice(
+        0,
+        displayed_text.length - units[i].length
+      ));
+    }
+  }
   return (screenVariables().get_input_area().innerHTML = displayed_text.slice(
     0,
     displayed_text.length - 1
@@ -245,6 +299,8 @@ function mode_switch() {
           screenVariables().get_conv_mode().style.visibility = "hidden";
         }
       }
+    } else {
+      screenVariables().get_conv_mode().style.visibility = 'hidden';
     }
   }
 }
@@ -271,4 +327,62 @@ function clear() {
     ));
   }
 }
+
+//CALCULATE PROBLEM CODE
+let equal_btn = document.getElementById("equals-btn");
+equal_btn.addEventListener("click", calculate);
+let arranged_data;
+function calculate() {
+  let calc_mode = document.getElementById("calc-mode").innerHTML;
+  let conv_mode = document.getElementById("conversion-mode").innerHTML;
+  let output = screenVariables().get_result_area();
+  let inputed_data = eval(screenVariables().get_input_area().innerHTML);
+
+  // arranged_data += eval(inputed_data);
+
+  let modes = {
+    num: () => {
+      console.log(screenVariables().get_input_area())
+      output.innerHTML = inputed_data;
+    }
+  };
+  return modes[calc_mode]();
+}
+
+//NUMBERS PARSE FUNCTION 
+//Changes every string to number or math object.
+
+// String.prototype.reverseValue = ()=>{
+//   let objects = {
+//     '+':+ ,
+//     '-': -,
+
+//   }
+// }
+
+//BATTERY LEVEL//////////////////////////
+let battery = document.getElementById('battery-level').children;
+battery = Array.from(battery);
+battery.reverse();
+setInterval(() => {
+  let battery_level = 100;
+  if (window.navigator.getBattery()) {
+    window.navigator.getBattery().then(function (battery) {
+      battery_level = battery.level * 100;
+    })
+  }
+  //set timeout because the promise delays its return of the new battery level.. 
+  setTimeout(() => {
+    let num_of_full_bars = parseInt(battery_level / 20);
+    let remnant_bar = (battery_level % 20) * 5;
+    for (let i = 0; i < num_of_full_bars; i += 1) {
+      battery[i].style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)';
+    }
+    remnant_bar == 0 ? ''
+      : battery[num_of_full_bars].style = ` background:linear-gradient( 270deg,rgb(62, 255, 156) ${remnant_bar}%, rgb(35, 46, 40) ${remnant_bar}%)`
+  }, 1000)
+}, 1000)
+
+
+
 
