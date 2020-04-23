@@ -105,10 +105,13 @@ power_btn.addEventListener("click", () => {
     state_data[localStorage.power_state][0];
   screenVariables().get_result_area().style.visibility =
     state_data[localStorage.power_state][0];
+
   if (localStorage.power_state == 'OFF') {
     screenVariables().get_conv_mode().style.visibility = 'hidden';
     screenVariables().get_calc_mode().innerHTML = 'num';
+
   }
+
 });
 
 //SCREEN VARIABLES //
@@ -352,37 +355,96 @@ function calculate() {
 //NUMBERS PARSE FUNCTION 
 //Changes every string to number or math object.
 
-// String.prototype.reverseValue = ()=>{
-//   let objects = {
-//     '+':+ ,
-//     '-': -,
 
-//   }
-// }
 
 //BATTERY LEVEL//////////////////////////
-let battery = document.getElementById('battery-level').children;
-battery = Array.from(battery);
-battery.reverse();
-setInterval(() => {
-  let battery_level = 100;
+function batteryStatus() {
+  let battery = document.getElementById('battery-level').children;
+  battery = Array.from(battery);
+  battery.reverse();
+
   if (window.navigator.getBattery()) {
-    window.navigator.getBattery().then(function (battery) {
-      battery_level = battery.level * 100;
-    })
+    setInterval(() => {
+      let battery_level;
+      window.navigator.getBattery().then(function (battery) {
+        battery_level = battery.level * 100;
+      })
+      //set timeout because the promise delays its return of the new battery level..
+      setTimeout(() => {
+        let num_of_full_bars = parseInt(battery_level / 20);
+        let remnant_bar = (battery_level % 20) * 5;
+        for (let i = 0; i < num_of_full_bars; i += 1) {
+          battery[i].style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)';
+        }
+        remnant_bar == 0 ? ''
+          : battery[num_of_full_bars].style = ` background:linear-gradient( 270deg,rgb(62, 255, 156) ${remnant_bar}%, rgb(35, 46, 40) ${remnant_bar}%)`
+      }, 1000)
+    }, 1000)
+
+
+  } else {
+    battery.forEach(el => el.style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)')
   }
-  //set timeout because the promise delays its return of the new battery level.. 
-  setTimeout(() => {
-    let num_of_full_bars = parseInt(battery_level / 20);
-    let remnant_bar = (battery_level % 20) * 5;
-    for (let i = 0; i < num_of_full_bars; i += 1) {
-      battery[i].style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)';
+}
+
+batteryStatus();
+
+//UNIT CONVERSION CODE////
+
+String.prototype.reverseValue = () => {
+  let objects = {
+    '+': `eval(3+2)`,
+    '-': eval('-'),
+    '': eval('*'),
+
+
+  }
+
+  return {
+    get_similar: (input) => console.log(objects[input])
+  }
+}
+
+let units = {
+  s: {
+    s: 1,
+    min: 60,
+    hr: 3600,
+  },
+  min: {
+    s: 0.01,
+    min: 1,
+    hr: 0.1
+  },
+  hr: {
+
+  }
+}
+
+function conv() {
+  try {
+    let input = screenVariables().get_input_area().innerHTML;
+    let value = +(input.match(/^[0-9]+/gi)).join();
+    let values_string = input.slice(value.toString().length);
+    let from_unit = values_string.slice(0, values_string.search('→'));
+    let to_unit = values_string.slice(values_string.search('→') + 1);
+
+    let output = value * units[from_unit][to_unit];
+
+    screenVariables().get_result_area().innerHTML = output;
+  }
+  catch (error) {
+    screenVariables().get_result_area().innerHTML = error.name;
+    return {
+      'error name': error.name,
+      'error message': 'Check your inputs'
     }
-    remnant_bar == 0 ? ''
-      : battery[num_of_full_bars].style = ` background:linear-gradient( 270deg,rgb(62, 255, 156) ${remnant_bar}%, rgb(35, 46, 40) ${remnant_bar}%)`
-  }, 1000)
-}, 1000)
+  }
+
+  // console.log(value.length, value.toString().length)
 
 
 
+}
 
+equal_btn.addEventListener('click', conv);
