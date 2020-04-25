@@ -28,6 +28,7 @@ body {
 
 main {
   background-color: var(--bg-color);
+  margin: 3em 0;
 }
 
 #calc-body {
