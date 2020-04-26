@@ -267,6 +267,10 @@ function erase_input() {
       ));
     }
   }
+  if (screenVariables().get_input_area().innerHTML.endsWith('>')) {
+    return (screenVariables().get_input_area()).removeChild((screenVariables().get_input_area()).lastElementChild);
+  }
+
   return (screenVariables().get_input_area().innerHTML = displayed_text.slice(
     0,
     displayed_text.length - 1
@@ -284,7 +288,7 @@ function clear_all() {
 
 //Display calculation mode//
 function mode_switch() {
-  let conv_units = ["length", "mass", "volume", "energy", "area"];
+  let conv_units = ["length", "time", "mass", "energy", "temp", "area"];
   let count = 0;
   let mode_area = document.getElementById("modes");
   mode_area.addEventListener("click", click_check);
@@ -339,14 +343,13 @@ function calculate() {
   let calc_mode = document.getElementById("calc-mode").innerHTML;
   let conv_mode = document.getElementById("conversion-mode").innerHTML;
   let output = screenVariables().get_result_area();
-  let inputed_data = eval(screenVariables().get_input_area().innerHTML);
+  // let inputed_data = eval(screenVariables().get_input_area().innerHTML);
 
   // arranged_data += eval(inputed_data);
 
   let modes = {
     num: () => {
-      console.log(screenVariables().get_input_area())
-      output.innerHTML = inputed_data;
+      // output.innerHTML = inputed_data;
     }
   };
   return modes[calc_mode]();
@@ -355,7 +358,30 @@ function calculate() {
 //NUMBERS PARSE FUNCTION 
 //Changes every string to number or math object.
 
+/// Numbr base code
+function date_conversion() {
+  let input = screenVariables().get_input_area().innerHTML;
+  let output = screenVariables().get_result_area();
+  let result;
+  let from_time_day = input.match(/[0-9]+/gi)[1];
+  let from_time_month = input.match(/[0-9]+/gi)[0];
+  let from_time_year = input.match(/[0-9]+/gi)[2];
 
+  let to_time_day = input.match(/[0-9]+/gi)[4];
+  let to_time_month = input.match(/[0-9]+/gi)[3];
+  let to_time_year = input.match(/[0-9]+/gi)[5];
+
+  let from_date = new Date(`${from_time_month}-${from_time_day}-${from_time_year}`);
+  let to_date = new Date(`${to_time_month}-${to_time_day}-${to_time_year}`);
+  let output_format = input.match(/[a-zA-Z]+/gi);
+
+  result = to_date - from_date;
+
+  if (output_format) {
+
+  }
+
+}
 
 //BATTERY LEVEL//////////////////////////
 function batteryStatus() {
@@ -560,7 +586,7 @@ let units = {
     mile: 6.2137e-13,
     ft: 3.2808e-9,
     in: 3.937e-8,
-  }, 
+  },
   µm: {
     nm: 1000,
     µm: 1,
@@ -688,7 +714,7 @@ let units = {
     km: 2.54e-5,
     yrd: 0.0277778,
     mile: 1.5783e-5,
-    ft: 1/12,
+    ft: 1 / 12,
     in: 1,
   },
 }
@@ -725,8 +751,8 @@ function conv() {
         break;
       case '→':
         output1 = value1_inUnit.toString().length > 9 ? value1_inUnit.toExponential(4)
-          : value1_inUnit.toString().includes('.')? value1_inUnit 
-          :value1_inUnit.toLocaleString();
+          : value1_inUnit.toString().includes('.') ? value1_inUnit
+            : value1_inUnit.toLocaleString();
         break;
       default:
         break;
@@ -750,4 +776,65 @@ function conv() {
   }
 }
 
-equal_btn.addEventListener('click', conv);
+// equal_btn.addEventListener('click', conv);
+equal_btn.addEventListener('click', base_conversion);
+
+function base_conversion() {
+  // debugger;
+  let input = screenVariables().get_input_area();
+  let input_nodes = Array.from(input.childNodes);
+  let output = '';
+  let number_of_elem = input_nodes.length;
+  let i
+
+  input_nodes.forEach(node => {
+    node.textContent = (node.textContent.replace(/\s/gi, '')).replace(/\–/gi, '-');
+  });
+  try {
+    for (i = 0; i < number_of_elem; i += 1) {
+      // debugger
+      if (input_nodes[i].constructor == Text) {
+        switch ((input_nodes[i].textContent).charAt(0)) {
+          case '/': output += '/'
+            break;
+          case '+': output += '+'
+            break;
+          case '×': output += '*'
+            break;
+          case '-': output += '-'
+            break;
+          default:
+            break;
+        }
+        if (input_nodes.length - 1 > i && input_nodes[i + 1].constructor == HTMLElement) {
+          output += parseInt((input_nodes[i].textContent).replace(/[\-\+\×\/]/gi, ''), input_nodes[i + 1].textContent);
+          i += 1;
+        } else {
+          output += Number((input_nodes[i].textContent).replace(/[\-\+\×\/]/gi, ''));
+        }
+      }
+    }
+    screenVariables().get_result_area().innerHTML = eval(output) == NaN ? 'syntaxError' : eval(output);
+  }
+  catch (error) {
+    return screenVariables().get_result_area().innerHTML = 'syntaxError';
+
+  }
+
+  // let digits_array = output.split(/\+|\-|\*|\//gi);
+  // let operators = output.split(/[0-9]+/); //// you can search for multiple splitter;
+  // let result = 0;
+
+
+  // //BODMAS// DIVISION --MULTIPLICATION -- ADDITION -- SUBTRACTION
+  // for (let j = 0; j < operators.length; j += 1) {
+  //   operators.includes('/')?digits_array[] 
+
+  // }
+
+  //EVAL OPENS DOOR TO SECURITY ISSUES... but the code running has zero user input influence
+  //if a malicious code is passed, it woulnt reach the eval code.
+
+
+}
+

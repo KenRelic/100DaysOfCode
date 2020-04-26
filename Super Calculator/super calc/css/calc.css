@@ -281,7 +281,8 @@ main {
 
 #num-calc-btns,
 #date-time-calc-btns,
-#conversion-cal-keys {
+#conversion-cal-keys,
+#temp-mass-btns {
   padding: 0.1em 0.2em 0.2em 0.5em;
   display: flex;
   flex-wrap: wrap;
@@ -306,7 +307,8 @@ main {
 
 #num-calc-btns div,
 #date-time-calc-btns div,
-#conversion-cal-keys div {
+#conversion-cal-keys div,
+ #temp-mass-btns div {
   background-color: var(--button-color);
   margin: 0.3em 0.3em 0.2em 0;
   line-height: 1.3;
@@ -317,7 +319,8 @@ main {
 }
 
 #date-time-calc-btns div,
-#conversion-cal-keys div {
+#conversion-cal-keys div ,
+#temp-mass-btns div{
   font-size: 0.8em;
   width: 3em;
 }
