@@ -5,7 +5,8 @@ direction_pad = Array.from(direction_pad.children);
 
 direction_pad.forEach(direction => {
   direction.addEventListener("click", () => {
-    // console.log(direction.id);
+    // this code is responisble for the display of the shadow from each direction
+    //button pressed on the direction keypad.//
     switch (direction.id) {
       case "up-btn":
         calc_direction_pad.style.boxShadow = "0 3px 0 1px #2f2f2f";
@@ -96,7 +97,8 @@ power_btn.addEventListener("click", () => {
   let state_data = { ON: ["visible", "aqua"], OFF: ["hidden", "#333"] };
 
   screenVariables().get_input_area().innerHTML = "";
-  screenVariables().get_result_area().style.visibility = "hidden";
+  screenVariables().get_result_area().style.visibility = "visible";
+  screenVariables().get_result_area().innerHTML = 0;
   screenVariables().get_calc_screen().style.backgroundColor =
     state_data[localStorage.power_state][1];
   screenVariables().get_top_screen().style.visibility =
@@ -186,9 +188,7 @@ function key_press_active() {
   let button = document.getElementById("other-keys");
   button.onclick = function (event) {
     let el = event.target;
-    // console.log(localStorage.power_state);
     if (localStorage.power_state == "ON") {
-      // console.log(el.dataset.value);
       if (el.dataset.value) {
         if (el.dataset.value == "Backspace") erase_input();
         else if (el.dataset.value == "equal") {
@@ -200,6 +200,37 @@ function key_press_active() {
     }
   };
 }
+
+function batteryStatus() {
+  let battery = document.getElementById('battery-level').children;
+  battery = Array.from(battery);
+  battery.reverse();
+
+  if (window.navigator.getBattery()) {
+    setInterval(() => {
+      let battery_level;
+      window.navigator.getBattery().then(function (battery) {
+        battery_level = battery.level * 100;
+      })
+      //set timeout because the promise delays its return of the new battery level..
+      setTimeout(() => {
+        let num_of_full_bars = parseInt(battery_level / 20);
+        let remnant_bar = (battery_level % 20) * 5;
+        for (let i = 0; i < num_of_full_bars; i += 1) {
+          battery[i].style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)';
+        }
+        remnant_bar == 0 ? ''
+          : battery[num_of_full_bars].style = ` background:linear-gradient( 270deg,rgb(62, 255, 156) ${remnant_bar}%, rgb(35, 46, 40) ${remnant_bar}%)`
+      }, 1000)
+    }, 1000)
+
+
+  } else {
+    battery.forEach(el => el.style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)')
+  }
+}
+
+batteryStatus()
 
 function input_handler() {
   let inputed_data;
@@ -281,9 +312,10 @@ function erase_input() {
 //Clears  all input data and any previous result still displayed
 let clear_all_btn = document.getElementById("cancel");
 clear_all_btn.addEventListener("click", clear_all);
+
 function clear_all() {
   screenVariables().get_input_area().innerHTML = "";
-  screenVariables().get_result_area().innerHTML = "";
+  screenVariables().get_result_area().innerHTML = "0";
 }
 
 //Display calculation mode//
@@ -315,6 +347,7 @@ function mode_switch() {
 //clear recent input
 let clear_btn = document.getElementById("clear-recent-input");
 clear_btn.addEventListener("click", clear);
+
 function clear() {
   let operators = ["-", "+", "/", "×", "(", ")"];
   let inputed_data = screenVariables().get_input_area().innerHTML;
@@ -337,9 +370,9 @@ function clear() {
 
 //CALCULATE PROBLEM CODE
 let equal_btn = document.getElementById("equals-btn");
-equal_btn.addEventListener("click", calculate);
 let arranged_data;
-function calculate() {
+
+function arithmetic_calc() {
   let calc_mode = document.getElementById("calc-mode").innerHTML;
   let conv_mode = document.getElementById("conversion-mode").innerHTML;
   let output = screenVariables().get_result_area();
@@ -384,36 +417,7 @@ function date_conversion() {
 }
 
 //BATTERY LEVEL//////////////////////////
-function batteryStatus() {
-  let battery = document.getElementById('battery-level').children;
-  battery = Array.from(battery);
-  battery.reverse();
-
-  if (window.navigator.getBattery()) {
-    setInterval(() => {
-      let battery_level;
-      window.navigator.getBattery().then(function (battery) {
-        battery_level = battery.level * 100;
-      })
-      //set timeout because the promise delays its return of the new battery level..
-      setTimeout(() => {
-        let num_of_full_bars = parseInt(battery_level / 20);
-        let remnant_bar = (battery_level % 20) * 5;
-        for (let i = 0; i < num_of_full_bars; i += 1) {
-          battery[i].style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)';
-        }
-        remnant_bar == 0 ? ''
-          : battery[num_of_full_bars].style = ` background:linear-gradient( 270deg,rgb(62, 255, 156) ${remnant_bar}%, rgb(35, 46, 40) ${remnant_bar}%)`
-      }, 1000)
-    }, 1000)
-
-
-  } else {
-    battery.forEach(el => el.style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)')
-  }
-}
-
-batteryStatus();
+;
 
 //UNIT CONVERSION CODE////
 
@@ -719,7 +723,7 @@ let units = {
   },
 }
 
-function conv() {
+function unit_conversion() {
   try {
     let input = screenVariables().get_input_area().innerHTML;
     let inValue = +(input.match(/[0-9]+/gi)[0]);
@@ -750,7 +754,7 @@ function conv() {
         output2 = inValue / value2_outUnit
         break;
       case '→':
-        output1 = value1_inUnit.toString().length > 9 ? value1_inUnit.toExponential(4)
+        output1 = value1_inUnit.toString().length > 9 ? value1_inUnit.toExponential(2)
           : value1_inUnit.toString().includes('.') ? value1_inUnit
             : value1_inUnit.toLocaleString();
         break;
@@ -776,8 +780,7 @@ function conv() {
   }
 }
 
-// equal_btn.addEventListener('click', conv);
-equal_btn.addEventListener('click', base_conversion);
+equal_btn.addEventListener('click', select_calculation);
 
 function base_conversion() {
   // debugger;
@@ -785,10 +788,17 @@ function base_conversion() {
   let input_nodes = Array.from(input.childNodes);
   let output = '';
   let number_of_elem = input_nodes.length;
-  let i
+  let base_of_result = '';
 
+  if (input.innerText.includes('→')) {
+    base_of_result = input.innerText.slice((input.innerText.indexOf('→')) + 1);
+    input_nodes.splice(input_nodes.length - 1);
+    number_of_elem -= 1;
+  }
+
+  let i;
   input_nodes.forEach(node => {
-    node.textContent = (node.textContent.replace(/\s/gi, '')).replace(/\–/gi, '-');
+    node.textContent = ((node.textContent.replace(/\s/gi, '')).replace(/\–/gi, '-'));
   });
   try {
     for (i = 0; i < number_of_elem; i += 1) {
@@ -806,35 +816,53 @@ function base_conversion() {
           default:
             break;
         }
-        if (input_nodes.length - 1 > i && input_nodes[i + 1].constructor == HTMLElement) {
+        if (number_of_elem - 1 > i && input_nodes[i + 1].constructor == HTMLElement) {
           output += parseInt((input_nodes[i].textContent).replace(/[\-\+\×\/]/gi, ''), input_nodes[i + 1].textContent);
           i += 1;
         } else {
-          output += Number((input_nodes[i].textContent).replace(/[\-\+\×\/]/gi, ''));
+          output += ((input_nodes[i].textContent).replace(/[\-\+\×\/\→]/gi, ''));
         }
       }
     }
-    screenVariables().get_result_area().innerHTML = eval(output) == NaN ? 'syntaxError' : eval(output);
+    //EVAL OPENS DOOR TO SECURITY ISSUES... but the code running has zero user input influence
+    //if a malicious code is passed, it woulnt reach the eval code.
+   
+    output = eval(output) == NaN ? 'syntaxError' : eval(output);
+   
+    output = output.toString(base_of_result||10);
+    output = `${output}<sub style='color:rebeccapurple'>${base_of_result}</sub>`;
+    // screenVariables().get_result_area().innerHTML = eval(output) == NaN ? 'syntaxError' : eval(output);
+    screenVariables().get_result_area().innerHTML = output;
   }
   catch (error) {
-    return screenVariables().get_result_area().innerHTML = 'syntaxError';
-
+    return screenVariables().get_result_area().innerHTML = 'synError';
   }
 
   // let digits_array = output.split(/\+|\-|\*|\//gi);
   // let operators = output.split(/[0-9]+/); //// you can search for multiple splitter;
   // let result = 0;
 
-
   // //BODMAS// DIVISION --MULTIPLICATION -- ADDITION -- SUBTRACTION
   // for (let j = 0; j < operators.length; j += 1) {
   //   operators.includes('/')?digits_array[] 
-
   // }
 
   //EVAL OPENS DOOR TO SECURITY ISSUES... but the code running has zero user input influence
   //if a malicious code is passed, it woulnt reach the eval code.
-
-
 }
 
+function select_calculation() {
+  let calc_mode = screenVariables().get_calc_mode().innerHTML;
+  // let conv_mode = screenVariables().get_conv_mode().innerHTML;
+  console.log(calc_mode)
+  switch (calc_mode) {
+    case 'base': base_conversion();
+      break;
+    case 'date': date_conversion();
+      break;
+    case 'conv': unit_conversion();
+      break;
+    default: arithmetic_calc();
+      break;
+  }
+}

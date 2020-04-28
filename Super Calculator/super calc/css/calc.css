@@ -106,6 +106,7 @@ main {
   margin-top: 1em;
   font-size: 1.5em;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'VT32', monospace;
   color: #000;
 }
 
@@ -131,6 +132,7 @@ main {
   text-align: end;
   font-size: 1.5em;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'VT32', monospace;
   color: #000;
 }
 
@@ -221,7 +223,7 @@ main {
 }
 
 #modes p:nth-of-type(2) {
-  background-color: rgb(255, 0, 208);
+  background-color: rgb(238, 63, 206);
 }
 
 #modes p:nth-of-type(3) {
@@ -282,7 +284,8 @@ main {
 #num-calc-btns,
 #date-time-calc-btns,
 #conversion-cal-keys,
-#temp-mass-btns {
+#temp-mass-btns,
+#energy-area-calc-btns {
   padding: 0.1em 0.2em 0.2em 0.5em;
   display: flex;
   flex-wrap: wrap;
@@ -308,7 +311,8 @@ main {
 #num-calc-btns div,
 #date-time-calc-btns div,
 #conversion-cal-keys div,
- #temp-mass-btns div {
+ #temp-mass-btns div,
+ #energy-area-calc-btns div {
   background-color: var(--button-color);
   margin: 0.3em 0.3em 0.2em 0;
   line-height: 1.3;
@@ -320,16 +324,24 @@ main {
 
 #date-time-calc-btns div,
 #conversion-cal-keys div ,
-#temp-mass-btns div{
+#temp-mass-btns div,
+#energy-area-calc-btns div{
   font-size: 0.8em;
   width: 3em;
 }
 
 #date-time-calc-btns {
-  border: 1px solid rgba(228, 18, 147, 0.469);
+  border: 1px solid rgba(228, 196, 18, 0.476);
 }
 
 #conversion-cal-keys {
+  border: 1px solid rgba(18, 228, 119, 0.476);
+}
+
+#temp-mass-btns{
+  border: 1px solid rgba(18, 228, 119, 0.476);
+}
+#energy-area-calc-btns{
   border: 1px solid rgba(18, 228, 119, 0.476);
 }
 
