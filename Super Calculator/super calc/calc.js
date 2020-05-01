@@ -393,31 +393,56 @@ function arithmetic_calc() {
 
 /// Numbr base code
 function date_conversion() {
-  let input = screenVariables().get_input_area().innerHTML;
-  let output = screenVariables().get_result_area();
-  let result;
-  let from_time_day = input.match(/[0-9]+/gi)[1];
-  let from_time_month = input.match(/[0-9]+/gi)[0];
-  let from_time_year = input.match(/[0-9]+/gi)[2];
 
-  let to_time_day = input.match(/[0-9]+/gi)[4];
-  let to_time_month = input.match(/[0-9]+/gi)[3];
-  let to_time_year = input.match(/[0-9]+/gi)[5];
+  try {
+    let input = screenVariables().get_input_area().innerHTML;
+    let output = screenVariables().get_result_area();
+    let result;
+    let date_data = input.match(/[0-9]+/g);
+    let conv_sign_idx = input.indexOf(input.match(/\→/g)[0]);
+    let output_format = 'yr';
+    let from_date;
+    let to_date;
+    let year, month, week, day, hour, min, sec;
 
-  let from_date = new Date(`${from_time_month}-${from_time_day}-${from_time_year}`);
-  let to_date = new Date(`${to_time_month}-${to_time_day}-${to_time_year}`);
-  let output_format = input.match(/[a-zA-Z]+/gi);
+    if (input.slice(0, conv_sign_idx) == 'now') {
+      from_date = new Date().getTime();
+      to_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`);
+    } else if (input.slice(conv_sign_idx + 1, conv_sign_idx + 4) == 'now') {
+      to_date = new Date().getTime();
+      from_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`);
+    } else {
+      from_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`);
+      to_date = new Date(`${date_data[4]}-${date_data[3]}-${date_data[5]}`);
 
-  result = to_date - from_date;
+      result = to_date - from_date;
+      year = Math.floor(result / (1000 * 60 * 60 * 24 * 365));
+      month = Math.floor((result % (1000 * 60 * 60 * 24 * 365)) / (2.628e+9));
+      week = Math.floor(((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) / (6.048e+8));
+      day = Math.floor((((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) % (6.048e+8)) / 8.64e+7);
+      hour = Math.floor(((((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) % (6.048e+8)) % 8.64e+7) / 3.6e+6);
+      min = Math.floor((((((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) % (6.048e+8)) % 8.64e+7) % 3.6e+6) / 60000);
+      sec = Math.floor(((((((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) % (6.048e+8)) % 8.64e+7) % 3.6e+6) % 60000) / 1000)
 
-  if (output_format) {
+      return output.innerHTML = `${year >= 1 ? year + 'yr(s)' : ''} ${month >= 1 ? month + 'mth(s)' : ''} ${week >= 1 ? week + 'wk(s)' : ''} ${day >= 1 ? day + 'dy(s)' : ''} ${hour >= 1 ? hour + 'hr(s)' : ''} ${min >= 1 ? min + 'min(s)' : ''} ${sec >= 1 ? sec + 's' : ''}`;
+    }
 
+    if (input.match(/\→/g).length == 2) {
+      output_format = input.match(/[a-z]+$/gi)[0];
+
+    }
+
+    result = to_date - from_date;
+    return output.innerHTML = result;
   }
+  catch (error) {
+    return screenVariables().get_result_area().innerHTML = 'syntaxError';
+  }
+
+
 
 }
 
-//BATTERY LEVEL//////////////////////////
-;
 
 //UNIT CONVERSION CODE////
 
@@ -826,12 +851,15 @@ function base_conversion() {
     }
     //EVAL OPENS DOOR TO SECURITY ISSUES... but the code running has zero user input influence
     //if a malicious code is passed, it woulnt reach the eval code.
-   
-    output = eval(output) == NaN ? 'syntaxError' : eval(output);
-   
-    output = output.toString(base_of_result||10);
+    output = (eval(output)).toString() == 'NaN' ? 'syntaxError' : eval(output);
+    output == 'syntaxError' ? base_of_result = '' : '';
+
+    output = output.toString(base_of_result || 10);
+    console.log(base_of_result, output);
+
     output = `${output}<sub style='color:rebeccapurple'>${base_of_result}</sub>`;
     // screenVariables().get_result_area().innerHTML = eval(output) == NaN ? 'syntaxError' : eval(output);
+
     screenVariables().get_result_area().innerHTML = output;
   }
   catch (error) {
@@ -851,10 +879,10 @@ function base_conversion() {
   //if a malicious code is passed, it woulnt reach the eval code.
 }
 
+//THIS CODE SWITCHES THE FORMULAR THAT CARRIES OU THE CALCUATION
 function select_calculation() {
   let calc_mode = screenVariables().get_calc_mode().innerHTML;
   // let conv_mode = screenVariables().get_conv_mode().innerHTML;
-  console.log(calc_mode)
   switch (calc_mode) {
     case 'base': base_conversion();
       break;
@@ -866,3 +894,4 @@ function select_calculation() {
       break;
   }
 }
+
