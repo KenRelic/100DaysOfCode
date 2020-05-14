@@ -1,7 +1,11 @@
+//NUMBER METHOD TO CHECK NEGATIVE NUMBERS//
+Number.prototype.isNegative = e => (/^\-/).test(e.toString());
+
 let direction_pad = document.getElementById("direction-pad");
 let calc_direction_pad = direction_pad;
 let inner_pad = document.querySelector("#direction-pad > div");
 direction_pad = Array.from(direction_pad.children);
+let date_conv_interval = undefined;
 
 direction_pad.forEach(direction => {
   direction.addEventListener("click", () => {
@@ -58,11 +62,14 @@ keys.forEach(key => button_effect(key));
 
 function button_effect(e) {
   e.addEventListener("click", () => {
-    e.style.animation = "button 0.3s linear running infinite";
-    setTimeout(() => {
-      e.style.animationPlayState = "paused";
-    }, 300);
-  });
+    if (e.innerHTML !== '=' && e.id !== "color-mode") {
+    window.clearInterval(date_conv_interval);
+  }
+  e.style.animation = "button 0.3s linear running infinite";
+  setTimeout(() => {
+    e.style.animationPlayState = "paused";
+  }, 300);
+});
 }
 
 //POWER BUTTON CODE//
@@ -113,7 +120,7 @@ power_btn.addEventListener("click", () => {
     screenVariables().get_calc_mode().innerHTML = 'num';
 
   }
-
+  window.clearInterval(date_conv_interval);
 });
 
 //SCREEN VARIABLES //
@@ -392,10 +399,10 @@ function arithmetic_calc() {
 //Changes every string to number or math object.
 
 /// Numbr base code
-function date_conversion() {
 
+function date_conversion() {
   try {
-    let input = screenVariables().get_input_area().innerHTML;
+    let input = (screenVariables().get_input_area().innerHTML).replace(/\s/g, '');
     let output = screenVariables().get_result_area();
     let result;
     let date_data = input.match(/[0-9]+/g);
@@ -404,45 +411,82 @@ function date_conversion() {
     let from_date;
     let to_date;
     let year, month, week, day, hour, min, sec;
-
+    let formats = {
+      cen: 3.154e+12,
+      dec: 3.154e+11,
+      yr: 31536000000,
+      mth: 2.628e+9,
+      wk: 6.048e+8,
+      day: 8.64e+7,
+      hr: 3.6e+6,
+      min: 60000,
+      s: 1000,
+      µs: 0.001
+    }
+    let values = Object.values(formats);
+    let keys = Object.keys(formats);
     if (input.slice(0, conv_sign_idx) == 'now') {
       from_date = new Date().getTime();
-      to_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`);
+      to_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`).getTime();
     } else if (input.slice(conv_sign_idx + 1, conv_sign_idx + 4) == 'now') {
       to_date = new Date().getTime();
-      from_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`);
+      from_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`).getTime();
     } else {
       from_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`);
       to_date = new Date(`${date_data[4]}-${date_data[3]}-${date_data[5]}`);
+    }
+    result = to_date - from_date;
 
-      result = to_date - from_date;
-      year = Math.floor(result / (1000 * 60 * 60 * 24 * 365));
-      month = Math.floor((result % (1000 * 60 * 60 * 24 * 365)) / (2.628e+9));
-      week = Math.floor(((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) / (6.048e+8));
-      day = Math.floor((((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) % (6.048e+8)) / 8.64e+7);
-      hour = Math.floor(((((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) % (6.048e+8)) % 8.64e+7) / 3.6e+6);
-      min = Math.floor((((((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) % (6.048e+8)) % 8.64e+7) % 3.6e+6) / 60000);
-      sec = Math.floor(((((((result % (1000 * 60 * 60 * 24 * 365)) % (2.628e+9)) % (6.048e+8)) % 8.64e+7) % 3.6e+6) % 60000) / 1000)
-
-      return output.innerHTML = `${year >= 1 ? year + 'yr(s)' : ''} ${month >= 1 ? month + 'mth(s)' : ''} ${week >= 1 ? week + 'wk(s)' : ''} ${day >= 1 ? day + 'dy(s)' : ''} ${hour >= 1 ? hour + 'hr(s)' : ''} ${min >= 1 ? min + 'min(s)' : ''} ${sec >= 1 ? sec + 's' : ''}`;
+    //check if result is a negative value// then insert ago after the output// 
+    let is_to_date_passed;
+    if (Number.prototype.isNegative(result)) {
+      result = -(result);
+      is_to_date_passed = true;
     }
 
     if (input.match(/\→/g).length == 2) {
       output_format = input.match(/[a-z]+$/gi)[0];
+      let idx = keys.indexOf(output_format);
+      let close_result_format = values[idx + 1];
+      let close_result_output;
+      close_result_format = ((result % formats[output_format]) / formats[close_result_format]);
+
+      if (close_result_format >= 1) {
+        close_result_output = keys[idx + 1];
+      } else {
+        close_result_output = '';
+      }
+
+      result /= formats[output_format];
+      if (result / formats[output_format] < 1) {
+        result = 0;
+      };
+      return output.innerHTML = result + output_format + ' ' + close_result_output + close_result_format + ' ' + is_to_date_passed;
+    } else {
+      year = Math.floor(result / 31536000000);
+      month = Math.floor((result % (31536000000)) / (2.628e+9));
+      week = Math.floor(((result % (31536000000)) % (2.628e+9)) / (6.048e+8));
+      day = Math.floor((((result % (31536000000)) % (2.628e+9)) % (6.048e+8)) / 8.64e+7);
+      hour = Math.floor(((((result % (31536000000)) % (2.628e+9)) % (6.048e+8)) % 8.64e+7) / 3.6e+6);
+      min = Math.floor((((((result % (31536000000)) % (2.628e+9)) % (6.048e+8)) % 8.64e+7) % 3.6e+6) / 60000);
+      sec = Math.floor(((((((result % (31536000000)) % (2.628e+9)) % (6.048e+8)) % 8.64e+7) % 3.6e+6) % 60000) / 1000)
+
+      return output.innerHTML = `${year >= 1 ? year + (year > 1 ? 'yrs' : 'yr')
+        : ''} ${month >= 1 ? month + (month > 1 ? 'mths' : 'mth')
+          : ''} ${week >= 1 ? week + (week > 1 ? 'wks' : 'wk')
+            : ''} ${day >= 1 ? day + (day > 1 ? 'dys' : 'dy')
+              : ''} ${hour >= 1 ? hour + (hour > 1 ? 'hrs' : 'hr')
+                : ''} ${min >= 1 ? min + (min > 1 ? 'mins' : 'min')
+                  : ''} ${sec >= 1 ? sec + 's'
+                    : ''} ${is_to_date_passed ? 'ago' : ''}`;
 
     }
-
-    result = to_date - from_date;
-    return output.innerHTML = result;
   }
   catch (error) {
+    console.log(error.message)
     return screenVariables().get_result_area().innerHTML = 'syntaxError';
   }
-
-
-
 }
-
 
 //UNIT CONVERSION CODE////
 
@@ -750,7 +794,7 @@ let units = {
 
 function unit_conversion() {
   try {
-    let input = screenVariables().get_input_area().innerHTML;
+    let input = (screenVariables().get_input_area().innerHTML).trim();
     let inValue = +(input.match(/[0-9]+/gi)[0]);
     let outValue = +(input.match(/[0-9]+/gi)[1]);
     let inUnit = input.match(/[A-Za-zµ]+/gi)[0];
@@ -886,7 +930,7 @@ function select_calculation() {
   switch (calc_mode) {
     case 'base': base_conversion();
       break;
-    case 'date': date_conversion();
+    case 'date': date_conv_interval = setInterval(date_conversion, 1000);
       break;
     case 'conv': unit_conversion();
       break;
