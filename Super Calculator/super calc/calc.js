@@ -13,46 +13,30 @@ direction_pad.forEach(direction => {
     //button pressed on the direction keypad.//
     switch (direction.id) {
       case "up-btn":
-        calc_direction_pad.style.boxShadow = "0 3px 0 1px #2f2f2f";
-        inner_pad.style.boxShadow =
-          "inset 0 2px 0 2px #1f1f1f, 0 0 20px 1px black";
-        setTimeout(() => {
-          calc_direction_pad.style.boxShadow = "";
-          inner_pad.style.boxShadow = "0 0 20px 1px black";
-        }, 300);
-        break;
+        directionPadAnimation("0 3px 0 1px #2f2f2f", "inset 0 2px 0 2px #1f1f1f, 0 0 20px 1px black");
       case "right-btn":
-        calc_direction_pad.style.boxShadow = "-3px 0 0 1px #2f2f2f";
-        inner_pad.style.boxShadow =
-          "inset -2px 0 0 2px #1f1f1f, 0 0 20px 1px black";
-        setTimeout(() => {
-          calc_direction_pad.style.boxShadow = "";
-          inner_pad.style.boxShadow = "0 0 20px 1px black";
-        }, 300);
+        directionPadAnimation("-3px 0 0 1px #2f2f2f",  "inset -2px 0 0 2px #1f1f1f, 0 0 20px 1px black");
         break;
       case "down-btn":
-        calc_direction_pad.style.boxShadow = "0 -3px 0 1px #2f2f2f";
-        inner_pad.style.boxShadow =
-          "inset 0 -2px 0 2px #1f1f1f, 0 0 20px 1px black";
-        setTimeout(() => {
-          calc_direction_pad.style.boxShadow = "";
-          inner_pad.style.boxShadow = "0 0 20px 1px black";
-        }, 300);
+        directionPadAnimation( "0 -3px 0 1px #2f2f2f",  "inset 0 -2px 0 2px #1f1f1f, 0 0 20px 1px black");
         break;
       case "left-btn":
-        calc_direction_pad.style.boxShadow = "3px 0 0 1px #2f2f2f";
-        inner_pad.style.boxShadow =
-          "inset 2px 0 0 2px #1f1f1f, 0 0 20px 1px black";
-        setTimeout(() => {
-          calc_direction_pad.style.boxShadow = "";
-          inner_pad.style.boxShadow = "0 0 20px 1px black";
-        }, 300);
+        directionPadAnimation("3px 0 0 1px #2f2f2f", "inset 2px 0 0 2px #1f1f1f, 0 0 20px 1px black");
         break;
       default:
         break;
     }
   });
 });
+
+function directionPadAnimation(outerBoxShadow, innerBoxShadow) {
+  calc_direction_pad.style.boxShadow = outerBoxShadow;
+  inner_pad.style.boxShadow = innerBoxShadow;
+  setTimeout(() => {
+    calc_direction_pad.style.boxShadow = "";
+    inner_pad.style.boxShadow = "0 0 20px 1px black";
+  }, 300);
+}
 
 //BUTTONS ON CLICK ANIMATION//
 let keys = document.querySelectorAll(".key");
@@ -119,7 +103,6 @@ power_btn.addEventListener("click", () => {
   if (localStorage.power_state == 'OFF') {
     screenVariables().get_conv_mode().style.visibility = 'hidden';
     screenVariables().get_calc_mode().innerHTML = 'date';
-
   }
   window.clearInterval(date_conv_interval);
 });
@@ -180,6 +163,7 @@ let color_modes_data = {
     "#aaa9a9"
   ]
 };
+
 const color_mode_toggle_btn = document.getElementById("color-mode");
 color_mode_toggle_btn.addEventListener("click", () => {
   current_color_mode = current_color_mode == "dark" ? "light" : "dark";
@@ -189,7 +173,7 @@ color_mode_toggle_btn.addEventListener("click", () => {
       `${color_mode_props[i]}`,
       color_modes_data[current_color_mode][i]
     );
-  }
+  };
 });
 
 function key_press_active() {
@@ -203,11 +187,11 @@ function key_press_active() {
         } else {
           screenVariables().get_input_area().innerHTML += el.dataset.value;
           input_handler().set_input(el.dataset.value);
-        }
-      }
-    }
+        };
+      };
+    };
   };
-}
+};
 
 function batteryStatus() {
   let battery = document.getElementById('battery-level').children;
@@ -229,8 +213,8 @@ function batteryStatus() {
         }
         remnant_bar == 0 ? ''
           : battery[num_of_full_bars].style = ` background:linear-gradient( 270deg,rgb(62, 255, 156) ${remnant_bar}%, rgb(35, 46, 40) ${remnant_bar}%)`
-      }, 1000)
-    }, 1000)
+      }, 1000);
+    }, 1000);
 
 
   } else {
@@ -249,18 +233,6 @@ function input_handler() {
   };
 }
 
-String.prototype.entitify = function (input) {
-  let entities = {
-    log: "Math.log",
-    sin: "Math.sin",
-    cos: "Math.cos",
-    tan: "Math.tan",
-    π: "Math.PI",
-    "√": "Math.sqrt",
-    "∛": "**(1/3)"
-  };
-  return entities[input];
-};
 //CLEAR TEXT ON CLICK OF BACKSPACE BUTTON
 // ON click of the button, the last innerHTML is removed and put back
 
@@ -404,7 +376,7 @@ function clear() {
   });
   if (inputed_data.lastIndexOf(last_operator) !== -1) {
     let start_index = inputed_data.lastIndexOf(last_operator);
-    if(inputed_data.endsWith(">")) return 
+    if (inputed_data.endsWith(">")) return
     return (screenVariables().get_input_area().innerHTML = inputed_data.slice(
       0,
       start_index + 1
@@ -455,7 +427,7 @@ function roman_numerals_conversion() {
 
     // }
   } else if (input.match(/[a-z0-9]+/gi)[1] == 'N') {
-    
+
   } else {
     return output.innerHTML = 'syntaxError'
   }
@@ -562,11 +534,11 @@ function date_conversion() {
                     : ''} ${is_to_date_passed ? 'ago' : ''}`;
 
     }
-  } catch(error) {
+  } catch (error) {
     console.log(error.message)
     return screenVariables().get_result_area().innerHTML = 'syntaxError';
   }
- 
+
 }
 
 //UNIT CONVERSION CODE////
@@ -920,14 +892,14 @@ function unit_conversion() {
     return inUnit == outUnit ? screenVariables().get_result_area().innerHTML = output1 + outUnit
       : screenVariables().get_result_area().innerHTML = output1 + outUnit + ' or ' + output2 + inUnit;
 
-  } catch(error) {
+  } catch (error) {
     screenVariables().get_result_area().innerHTML = 'syntaxError';
     return {
       'error name': error.name,
       'error message': 'Check your inputs'
     }
   }
-  
+
 }
 
 equal_btn.addEventListener('click', select_calculation);
@@ -980,15 +952,15 @@ function base_conversion() {
     output == 'syntaxError' ? base_of_result = '' : '';
 
     output = output.toString(base_of_result || 10);
-    base_of_result === "16"? output = output.toUpperCase() : output;
+    base_of_result === "16" ? output = output.toUpperCase() : output;
     output = `${output}<sub style='color:rebeccapurple'>${base_of_result}</sub>`;
     // screenVariables().get_result_area().innerHTML = eval(output) == NaN ? 'syntaxError' : eval(output);
 
     screenVariables().get_result_area().innerHTML = output;
-  } catch(error) {
+  } catch (error) {
     return screenVariables().get_result_area().innerHTML = 'synError';
   }
- 
+
 
   // let digits_array = output.split(/\+|\-|\*|\//gi);
   // let operators = output.split(/[0-9]+/); //// you can search for multiple splitter;
