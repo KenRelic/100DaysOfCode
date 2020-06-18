@@ -70,7 +70,7 @@ window.onload = function () {
   //set screen default values to off.
   screenVariables().get_input_area().innerHTML = "";
   screenVariables().get_result_area().style.visibility = "hidden";
-  screenVariables().get_calc_screen().style.backgroundColor = "#333";
+  screenVariables().get_calc_screen().style.backgroundColor = "#222f38";
   screenVariables().get_calc_screen().style.boxShadow =
     "inset 0 2px 10px 1px #111";
   screenVariables().get_top_screen().style.visibility = "hidden";
@@ -141,7 +141,8 @@ let color_mode_props = [
   "--screen-color",
   "--screen-box-shadow",
   "--button-color",
-  "--mode-label-color"
+  "--mode-label-color",
+  "--keys-font-weight"
 ];
 let color_modes_data = {
   dark: [
@@ -151,7 +152,8 @@ let color_modes_data = {
     "aqua",
     " inset 0 2px 10px 1px #018874",
     "#fff",
-    "#1b1b1b"
+    "#1b1b1b",
+    "500"
   ],
   light: [
     "#fff",
@@ -160,7 +162,8 @@ let color_modes_data = {
     "#fff",
     " inset 0 2px 10px 1px #222",
     "#000",
-    "#aaa9a9"
+    "#aaa9a9",
+    "lighter"
   ]
 };
 
@@ -324,6 +327,14 @@ function erase_input() {
 let clear_all_btn = document.getElementById("cancel");
 clear_all_btn.addEventListener("click", clear_all);
 
+// clear on press of delete key
+window.onkeydown = function(event){
+  let el = event.which || event.keyCode;
+  console.log(el);
+  if(el===46) return clear_all();
+  if(el===8) return erase_input();
+ 
+}
 function clear_all() {
   screenVariables().get_input_area().innerHTML = "";
   screenVariables().get_result_area().innerHTML = "0";
