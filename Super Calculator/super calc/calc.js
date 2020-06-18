@@ -13,46 +13,30 @@ direction_pad.forEach(direction => {
     //button pressed on the direction keypad.//
     switch (direction.id) {
       case "up-btn":
-        calc_direction_pad.style.boxShadow = "0 3px 0 1px #2f2f2f";
-        inner_pad.style.boxShadow =
-          "inset 0 2px 0 2px #1f1f1f, 0 0 20px 1px black";
-        setTimeout(() => {
-          calc_direction_pad.style.boxShadow = "";
-          inner_pad.style.boxShadow = "0 0 20px 1px black";
-        }, 300);
-        break;
+        directionPadAnimation("0 3px 0 1px #2f2f2f", "inset 0 2px 0 2px #1f1f1f, 0 0 20px 1px black");
       case "right-btn":
-        calc_direction_pad.style.boxShadow = "-3px 0 0 1px #2f2f2f";
-        inner_pad.style.boxShadow =
-          "inset -2px 0 0 2px #1f1f1f, 0 0 20px 1px black";
-        setTimeout(() => {
-          calc_direction_pad.style.boxShadow = "";
-          inner_pad.style.boxShadow = "0 0 20px 1px black";
-        }, 300);
+        directionPadAnimation("-3px 0 0 1px #2f2f2f",  "inset -2px 0 0 2px #1f1f1f, 0 0 20px 1px black");
         break;
       case "down-btn":
-        calc_direction_pad.style.boxShadow = "0 -3px 0 1px #2f2f2f";
-        inner_pad.style.boxShadow =
-          "inset 0 -2px 0 2px #1f1f1f, 0 0 20px 1px black";
-        setTimeout(() => {
-          calc_direction_pad.style.boxShadow = "";
-          inner_pad.style.boxShadow = "0 0 20px 1px black";
-        }, 300);
+        directionPadAnimation( "0 -3px 0 1px #2f2f2f",  "inset 0 -2px 0 2px #1f1f1f, 0 0 20px 1px black");
         break;
       case "left-btn":
-        calc_direction_pad.style.boxShadow = "3px 0 0 1px #2f2f2f";
-        inner_pad.style.boxShadow =
-          "inset 2px 0 0 2px #1f1f1f, 0 0 20px 1px black";
-        setTimeout(() => {
-          calc_direction_pad.style.boxShadow = "";
-          inner_pad.style.boxShadow = "0 0 20px 1px black";
-        }, 300);
+        directionPadAnimation("3px 0 0 1px #2f2f2f", "inset 2px 0 0 2px #1f1f1f, 0 0 20px 1px black");
         break;
       default:
         break;
     }
   });
 });
+
+function directionPadAnimation(outerBoxShadow, innerBoxShadow) {
+  calc_direction_pad.style.boxShadow = outerBoxShadow;
+  inner_pad.style.boxShadow = innerBoxShadow;
+  setTimeout(() => {
+    calc_direction_pad.style.boxShadow = "";
+    inner_pad.style.boxShadow = "0 0 20px 1px black";
+  }, 300);
+}
 
 //BUTTONS ON CLICK ANIMATION//
 let keys = document.querySelectorAll(".key");
@@ -62,14 +46,15 @@ keys.forEach(key => button_effect(key));
 
 function button_effect(e) {
   e.addEventListener("click", () => {
-    if (e.innerHTML !== '=' && e.id !== "color-mode") {
-    window.clearInterval(date_conv_interval);
-  }
-  e.style.animation = "button 0.3s linear running infinite";
-  setTimeout(() => {
-    e.style.animationPlayState = "paused";
-  }, 300);
-});
+    if (e.id !== "color-mode") {
+      // e.innerHTML !== '=' && 
+      window.clearInterval(date_conv_interval);
+    }
+    e.style.animation = "button 0.3s linear running infinite";
+    setTimeout(() => {
+      e.style.animationPlayState = "paused";
+    }, 300);
+  });
 }
 
 //POWER BUTTON CODE//
@@ -85,7 +70,7 @@ window.onload = function () {
   //set screen default values to off.
   screenVariables().get_input_area().innerHTML = "";
   screenVariables().get_result_area().style.visibility = "hidden";
-  screenVariables().get_calc_screen().style.backgroundColor = "#333";
+  screenVariables().get_calc_screen().style.backgroundColor = "#222f38";
   screenVariables().get_calc_screen().style.boxShadow =
     "inset 0 2px 10px 1px #111";
   screenVariables().get_top_screen().style.visibility = "hidden";
@@ -117,8 +102,7 @@ power_btn.addEventListener("click", () => {
 
   if (localStorage.power_state == 'OFF') {
     screenVariables().get_conv_mode().style.visibility = 'hidden';
-    screenVariables().get_calc_mode().innerHTML = 'num';
-
+    screenVariables().get_calc_mode().innerHTML = 'date';
   }
   window.clearInterval(date_conv_interval);
 });
@@ -157,7 +141,8 @@ let color_mode_props = [
   "--screen-color",
   "--screen-box-shadow",
   "--button-color",
-  "--mode-label-color"
+  "--mode-label-color",
+  "--keys-font-weight"
 ];
 let color_modes_data = {
   dark: [
@@ -167,7 +152,8 @@ let color_modes_data = {
     "aqua",
     " inset 0 2px 10px 1px #018874",
     "#fff",
-    "#1b1b1b"
+    "#1b1b1b",
+    "500"
   ],
   light: [
     "#fff",
@@ -176,9 +162,11 @@ let color_modes_data = {
     "#fff",
     " inset 0 2px 10px 1px #222",
     "#000",
-    "#aaa9a9"
+    "#aaa9a9",
+    "lighter"
   ]
 };
+
 const color_mode_toggle_btn = document.getElementById("color-mode");
 color_mode_toggle_btn.addEventListener("click", () => {
   current_color_mode = current_color_mode == "dark" ? "light" : "dark";
@@ -188,7 +176,7 @@ color_mode_toggle_btn.addEventListener("click", () => {
       `${color_mode_props[i]}`,
       color_modes_data[current_color_mode][i]
     );
-  }
+  };
 });
 
 function key_press_active() {
@@ -202,11 +190,11 @@ function key_press_active() {
         } else {
           screenVariables().get_input_area().innerHTML += el.dataset.value;
           input_handler().set_input(el.dataset.value);
-        }
-      }
-    }
+        };
+      };
+    };
   };
-}
+};
 
 function batteryStatus() {
   let battery = document.getElementById('battery-level').children;
@@ -228,16 +216,16 @@ function batteryStatus() {
         }
         remnant_bar == 0 ? ''
           : battery[num_of_full_bars].style = ` background:linear-gradient( 270deg,rgb(62, 255, 156) ${remnant_bar}%, rgb(35, 46, 40) ${remnant_bar}%)`
-      }, 1000)
-    }, 1000)
+      }, 1000);
+    }, 1000);
 
 
   } else {
     battery.forEach(el => el.style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)')
   }
-}
+};
 
-batteryStatus()
+batteryStatus();
 
 function input_handler() {
   let inputed_data;
@@ -248,30 +236,18 @@ function input_handler() {
   };
 }
 
-String.prototype.entitify = function (input) {
-  let entities = {
-    log: "Math.log",
-    sin: "Math.sin",
-    cos: "Math.cos",
-    tan: "Math.tan",
-    π: "Math.PI",
-    "√": "Math.sqrt",
-    "∛": "**(1/3)",
-    // "n√": `**${1 / number}`,
-    // "^": `**${number}`
-  };
-  return entities[input];
-};
 //CLEAR TEXT ON CLICK OF BACKSPACE BUTTON
 // ON click of the button, the last innerHTML is removed and put back
 
 function erase_input() {
   let displayed_text = screenVariables().get_input_area().innerHTML;
   let units = [
-    "cos",
-    "tan",
-    "sin",
-    "log",
+    "sqft",
+    "sqm",
+    "sqcm",
+    "sqmile",
+    "sqmm",
+    "mg",
     "µs",
     "ms",
     "min",
@@ -293,7 +269,38 @@ function erase_input() {
     "nm",
     "nmi",
     "hm",
-    "µm"
+    "µm",
+    "Acre",
+    "kj",
+    "gcal",
+    "kcal",
+    "KWh",
+    "Wh",
+    "eV",
+    "ft.lb",
+    "Ha",
+    "sqkm",
+    "sqYrd",
+    "sqIn",
+    "kg",
+    "dg",
+    "g",
+    "oz",
+    "lb",
+    "st",
+    "carat",
+    "j",
+    "s.ton",
+    "l.ton",
+    "ton",
+    "ROM",
+    "°K",
+    "°F",
+    "°C",
+    "<sub>2</sub>",
+    "<sub>8</sub>",
+    "<sub>10</sub>",
+    "<sub>16</sub>"
   ];
   let i;
 
@@ -320,6 +327,14 @@ function erase_input() {
 let clear_all_btn = document.getElementById("cancel");
 clear_all_btn.addEventListener("click", clear_all);
 
+// clear on press of delete key
+window.onkeydown = function(event){
+  let el = event.which || event.keyCode;
+  console.log(el);
+  if(el===46) return clear_all();
+  if(el===8) return erase_input();
+ 
+}
 function clear_all() {
   screenVariables().get_input_area().innerHTML = "";
   screenVariables().get_result_area().innerHTML = "0";
@@ -328,6 +343,7 @@ function clear_all() {
 //Display calculation mode//
 function mode_switch() {
   let conv_units = ["length", "time", "mass", "energy", "temp", "area"];
+
   let count = 0;
   let mode_area = document.getElementById("modes");
   mode_area.addEventListener("click", click_check);
@@ -336,6 +352,9 @@ function mode_switch() {
     if (localStorage.power_state == "ON") {
       if (el.dataset.value) {
         screenVariables().get_calc_mode().innerHTML = el.dataset.value;
+        screenVariables().get_calc_mode().style.backgroundColor = el.dataset.value == 'date' ? '#ffd900'
+          : el.dataset.value == 'base' ? '#ee3fce' : el.dataset.value == 'rom' ? '#009dff'
+            : el.dataset.value == 'conv' ? '#00ff91' : '';
         if (el.dataset.value == "conv") {
           screenVariables().get_conv_mode().innerHTML = conv_units[count];
           screenVariables().get_conv_mode().style.visibility = "visible";
@@ -356,7 +375,7 @@ let clear_btn = document.getElementById("clear-recent-input");
 clear_btn.addEventListener("click", clear);
 
 function clear() {
-  let operators = ["-", "+", "/", "×", "(", ")"];
+  let operators = ["-", "+", "/", "×"];
   let inputed_data = screenVariables().get_input_area().innerHTML;
   let last_operator;
 
@@ -368,6 +387,7 @@ function clear() {
   });
   if (inputed_data.lastIndexOf(last_operator) !== -1) {
     let start_index = inputed_data.lastIndexOf(last_operator);
+    if (inputed_data.endsWith(">")) return
     return (screenVariables().get_input_area().innerHTML = inputed_data.slice(
       0,
       start_index + 1
@@ -378,21 +398,52 @@ function clear() {
 //CALCULATE PROBLEM CODE
 let equal_btn = document.getElementById("equals-btn");
 let arranged_data;
+let roman_num_data = {
+  1: "I",
+  4: "IV",
+  5: "V",
+  9: "IX",
+  10: "X",
+  40: "XL",
+  50: "L",
+  90: "XC",
+  100: "C",
+  400: "CD",
+  500: "D",
+  900: "CM",
+  1000: "M"
+};
 
-function arithmetic_calc() {
-  let calc_mode = document.getElementById("calc-mode").innerHTML;
-  let conv_mode = document.getElementById("conversion-mode").innerHTML;
+
+function roman_numerals_conversion() {
+  let input = (screenVariables().get_input_area().innerText).replace(/\s/g, '');
   let output = screenVariables().get_result_area();
-  // let inputed_data = eval(screenVariables().get_input_area().innerHTML);
+  let result = '';
+  let digits = Object.keys(roman_num_data);
+  let roman_numerals = Object.values(roman_num_data);
 
-  // arranged_data += eval(inputed_data);
-
-  let modes = {
-    num: () => {
-      // output.innerHTML = inputed_data;
+  let value = Number(input.match(/[0-9]+/gi)[0]);
+  if (input.match(/[a-z0-9]+/gi)[1] == 'NROM') {
+    if (!isNaN(value) && value < 9999) {
+      for (let i = digits.length - 1; i >= 0; i -= 1) {
+        while (value >= digits[i]) {
+          result += roman_numerals[i];
+          value -= digits[i];
+        }
+      }
+      return output.innerHTML = result;
+    } else {
+      return output.innerHTML = 'Out of range'
     }
-  };
-  return modes[calc_mode]();
+
+    // }
+  } else if (input.match(/[a-z0-9]+/gi)[1] == 'N') {
+
+  } else {
+    return output.innerHTML = 'syntaxError'
+  }
+
+  return;
 }
 
 //NUMBERS PARSE FUNCTION 
@@ -405,6 +456,7 @@ function date_conversion() {
     let input = (screenVariables().get_input_area().innerHTML).replace(/\s/g, '');
     let output = screenVariables().get_result_area();
     let result;
+    let output_value;
     let date_data = input.match(/[0-9]+/g);
     let conv_sign_idx = input.indexOf(input.match(/\→/g)[0]);
     let output_format = 'yr';
@@ -421,10 +473,11 @@ function date_conversion() {
       hr: 3.6e+6,
       min: 60000,
       s: 1000,
-      µs: 0.001
+      // µs: 0.001
     }
     let values = Object.values(formats);
     let keys = Object.keys(formats);
+
     if (input.slice(0, conv_sign_idx) == 'now') {
       from_date = new Date().getTime();
       to_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`).getTime();
@@ -435,6 +488,7 @@ function date_conversion() {
       from_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`);
       to_date = new Date(`${date_data[4]}-${date_data[3]}-${date_data[5]}`);
     }
+
     result = to_date - from_date;
 
     //check if result is a negative value// then insert ago after the output// 
@@ -445,23 +499,33 @@ function date_conversion() {
     }
 
     if (input.match(/\→/g).length == 2) {
-      output_format = input.match(/[a-z]+$/gi)[0];
-      let idx = keys.indexOf(output_format);
-      let close_result_format = values[idx + 1];
-      let close_result_output;
-      close_result_format = ((result % formats[output_format]) / formats[close_result_format]);
-
-      if (close_result_format >= 1) {
-        close_result_output = keys[idx + 1];
+      output_format = input.match(/µ?[a-z]+$/gi)[0];
+      if (output_format == 'µs') {
+        return output.innerHTML = `${result}${output_format} ${is_to_date_passed ? 'ago' : ''}`;
       } else {
-        close_result_output = '';
+        let idx = keys.indexOf(output_format);
+        let remainder = result % values[idx];
+        let first_value = Math.floor(result / values[idx]);
+        let output_value = `${first_value >= 1 ? first_value + (first_value > 1 ?
+          ((/[s]$/).test(keys[idx])) ? keys[idx] : keys[idx] + 's' : '') : ''}`;
+        let check = false;
+
+        values.reduce((remainder, value, i) => {
+          if (idx + 1 === i) {
+            check = true;
+          }
+          if (check) {
+            let next_value = Math.floor(remainder / value);
+            output_value += ` ${next_value >= 1 ? next_value + (next_value > 1 ?
+              ((/[s]$/).test(keys[i])) ? keys[i] : keys[i] + 's' : '') : ''}`;
+            remainder %= value;
+          }
+          return remainder;;
+        }, remainder);
+
+        return output.innerHTML = `${output_value} ${is_to_date_passed ? 'ago' : ''}`;
       }
 
-      result /= formats[output_format];
-      if (result / formats[output_format] < 1) {
-        result = 0;
-      };
-      return output.innerHTML = result + output_format + ' ' + close_result_output + close_result_format + ' ' + is_to_date_passed;
     } else {
       year = Math.floor(result / 31536000000);
       month = Math.floor((result % (31536000000)) / (2.628e+9));
@@ -481,11 +545,11 @@ function date_conversion() {
                     : ''} ${is_to_date_passed ? 'ago' : ''}`;
 
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error.message)
     return screenVariables().get_result_area().innerHTML = 'syntaxError';
   }
+
 }
 
 //UNIT CONVERSION CODE////
@@ -839,14 +903,14 @@ function unit_conversion() {
     return inUnit == outUnit ? screenVariables().get_result_area().innerHTML = output1 + outUnit
       : screenVariables().get_result_area().innerHTML = output1 + outUnit + ' or ' + output2 + inUnit;
 
-  }
-  catch (error) {
+  } catch (error) {
     screenVariables().get_result_area().innerHTML = 'syntaxError';
     return {
       'error name': error.name,
       'error message': 'Check your inputs'
     }
   }
+
 }
 
 equal_btn.addEventListener('click', select_calculation);
@@ -860,10 +924,10 @@ function base_conversion() {
   let base_of_result = '';
 
   if (input.innerText.includes('→')) {
-    base_of_result = input.innerText.slice((input.innerText.indexOf('→')) + 1);
+    base_of_result = input.innerText.slice((input.innerText.indexOf('N')) + 1);
     input_nodes.splice(input_nodes.length - 1);
     number_of_elem -= 1;
-  }
+  };
 
   let i;
   input_nodes.forEach(node => {
@@ -886,10 +950,10 @@ function base_conversion() {
             break;
         }
         if (number_of_elem - 1 > i && input_nodes[i + 1].constructor == HTMLElement) {
-          output += parseInt((input_nodes[i].textContent).replace(/[\-\+\×\/]/gi, ''), input_nodes[i + 1].textContent);
+          output += parseInt((input_nodes[i].textContent).replace(/[\-\+\×\/N]/gi, ''), input_nodes[i + 1].textContent);
           i += 1;
         } else {
-          output += ((input_nodes[i].textContent).replace(/[\-\+\×\/\→]/gi, ''));
+          output += ((input_nodes[i].textContent).replace(/[\-\+\×\/\→N]/gi, ''));
         }
       }
     }
@@ -899,16 +963,15 @@ function base_conversion() {
     output == 'syntaxError' ? base_of_result = '' : '';
 
     output = output.toString(base_of_result || 10);
-    console.log(base_of_result, output);
-
+    base_of_result === "16" ? output = output.toUpperCase() : output;
     output = `${output}<sub style='color:rebeccapurple'>${base_of_result}</sub>`;
     // screenVariables().get_result_area().innerHTML = eval(output) == NaN ? 'syntaxError' : eval(output);
 
     screenVariables().get_result_area().innerHTML = output;
-  }
-  catch (error) {
+  } catch (error) {
     return screenVariables().get_result_area().innerHTML = 'synError';
   }
+
 
   // let digits_array = output.split(/\+|\-|\*|\//gi);
   // let operators = output.split(/[0-9]+/); //// you can search for multiple splitter;
@@ -930,11 +993,11 @@ function select_calculation() {
   switch (calc_mode) {
     case 'base': base_conversion();
       break;
-    case 'date': date_conv_interval = setInterval(date_conversion, 1000);
+    case 'rom': roman_numerals_conversion();
       break;
     case 'conv': unit_conversion();
       break;
-    default: arithmetic_calc();
+    default: date_conv_interval = setInterval(date_conversion, 1000)
       break;
   }
 }

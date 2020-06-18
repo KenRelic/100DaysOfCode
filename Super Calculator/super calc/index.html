@@ -27,7 +27,7 @@
                 </section>
                 <section id="screen">
                     <div id="top-screen">
-                        <p id="calc-mode">num</p><span id="conversion-mode">length</span>
+                        <p id="calc-mode">date</p><span id="conversion-mode">length</span>
                     </div>
                     <div id="entered-text">
                         <p><span id="input-area"></span><span id="blinking-cursor">_</span></p>
@@ -85,11 +85,11 @@
                         <div class="key" data-value="×">×</div>
                         <div class="key" data-value="/">/</div>
                         <div class="key rom" data-value="M">M</div>
-                        <div class="key big-numeral rom" data-value="X"><span>&ndash;</span>X</div>
+                        <div class="key rom" data-value="<sub>ROM</sub>">rom</div>
                         <div class="key" data-value=".">.</div>
                         <div class="key" data-value="0">0</div>
                         <div class="key" data-value="-">&plusmn;</div>
-                        <div class="key" data-value="<sub style='font-size: 0.6em'>2</sub>">e</div>
+                        <div class="key" data-value="e">e</div>
                         <div class="key" data-value="N">N</div>
 
                     </div>
@@ -108,6 +108,9 @@
                         <div class="key" data-value="now">now</div>
                     </div>
                     <div id="energy-area-calc-btns">
+                        <div class="key" data-value="&deg;K">&deg;K</div>
+                        <div class="key" data-value="&deg;C">&deg;C</div>
+                        <div class="key" data-value="&deg;F">&deg;F</div>
                         <div class="key" data-value="j">j</div>
                         <div class="key" data-value="kj">kj</div>
                         <div class="key" data-value="gcal">gcal</div>
@@ -118,23 +121,23 @@
                         <div class="key" data-value="ft.lb">ft.lb</div>
                         <div class="key" data-value="Acre">Acre</div>
                         <div class="key" data-value="Ha">Ha</div>
-                        <div class="key" data-value="sqkm">sqkm</div>
-                        <div class="key" data-value="sqYrd">sqYrd</div>
+                        <div class="key" data-value="sqkm">sqkm</div>                   
                         <div class="key" data-value="sqIn">sqIn</div>
                         <div class="key" data-value="sqft">sqft</div>
-                        <div class="key" data-value="sqm">sqm</div>
-                        <div class="key" data-value="sqcm">sqcm</div>
-                        <div class="key" data-value="sqmile">sqmile</div>
-                        <div class="key" data-value="sqmm">sqmm</div>
+                        <div class="key" data-value="sqm">sqm</div>                   
+                        <div class="key" data-value="sqmile">sqmile</div>                  
                     </div>
                     <div id="temp-mass-btns">
                         <div class="key" data-value="<sub style='font-size: 0.6em'>2</sub>">BIN</div>
                         <div class="key" data-value="<sub>8</sub>">OCT</div>
                         <div class="key" data-value="<sub>10</sub>">DEC</div>
                         <div class="key" data-value="<sub>16</sub>">HEX</div>
-                        <div class="key" data-value="&deg;K">&deg;K</div>
-                        <div class="key" data-value="&deg;C">&deg;C</div>
-                        <div class="key" data-value="&deg;F">&deg;F</div>
+                        <div class="key" data-value="A">A</div>
+                        <div class="key" data-value="B">B</div>
+                        <div class="key" data-value="C">C</div>
+                        <div class="key" data-value="D">D</div>
+                        <div class="key" data-value="E">E</div>
+                        <div class="key" data-value="F">F</div>
                         <div class="key" data-value="mg">mg</div>
                         <div class="key" data-value="g">g</div>
                         <div class="key" data-value="kg">kg</div>
@@ -142,10 +145,7 @@
                         <div class="key" data-value="lb">lb</div>
                         <div class="key" data-value="ton">ton</div>
                         <div class="key" data-value="st">st</div>
-                        <div class="key" data-value="carat">carat</div>
-                        <div class="key" data-value="dg">dg</div>
-                        <div class="key" data-value="s.ton">s.ton</div>
-                        <div class="key" data-value="l.ton">l.ton</div>
+                        <div class="key" data-value="carat">carat</div>                     
                     </div>
                     <div id="conversion-cal-keys">
                         <div class="key" data-value="nm">nm</div>
@@ -169,7 +169,8 @@
             </section>
         </div>
     </main>
-    <script src="./calc.js"></script>
+    <script type="module" src="calc.js"></script>
+    <script src="js/resource.js" type="module"></script>
 </body>
 
 </html>
