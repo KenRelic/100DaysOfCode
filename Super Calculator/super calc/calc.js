@@ -15,10 +15,10 @@ direction_pad.forEach(direction => {
       case "up-btn":
         directionPadAnimation("0 3px 0 1px #2f2f2f", "inset 0 2px 0 2px #1f1f1f, 0 0 20px 1px black");
       case "right-btn":
-        directionPadAnimation("-3px 0 0 1px #2f2f2f",  "inset -2px 0 0 2px #1f1f1f, 0 0 20px 1px black");
+        directionPadAnimation("-3px 0 0 1px #2f2f2f", "inset -2px 0 0 2px #1f1f1f, 0 0 20px 1px black");
         break;
       case "down-btn":
-        directionPadAnimation( "0 -3px 0 1px #2f2f2f",  "inset 0 -2px 0 2px #1f1f1f, 0 0 20px 1px black");
+        directionPadAnimation("0 -3px 0 1px #2f2f2f", "inset 0 -2px 0 2px #1f1f1f, 0 0 20px 1px black");
         break;
       case "left-btn":
         directionPadAnimation("3px 0 0 1px #2f2f2f", "inset 2px 0 0 2px #1f1f1f, 0 0 20px 1px black");
@@ -328,12 +328,12 @@ let clear_all_btn = document.getElementById("cancel");
 clear_all_btn.addEventListener("click", clear_all);
 
 // clear on press of delete key
-window.onkeydown = function(event){
+window.onkeydown = function (event) {
   let el = event.which || event.keyCode;
   console.log(el);
-  if(el===46) return clear_all();
-  if(el===8) return erase_input();
- 
+  if (el === 46) return clear_all();
+  if (el === 8) return erase_input();
+
 }
 function clear_all() {
   screenVariables().get_input_area().innerHTML = "";
@@ -456,7 +456,7 @@ function date_conversion() {
     let input = (screenVariables().get_input_area().innerHTML).replace(/\s/g, '');
     let output = screenVariables().get_result_area();
     let result;
-    let output_value;
+    let conversion_depth = (screenVariables().get_input_area().innerHTML).match(/→/g).length;
     let date_data = input.match(/[0-9]+/g);
     let conv_sign_idx = input.indexOf(input.match(/\→/g)[0]);
     let output_format = 'yr';
@@ -481,7 +481,7 @@ function date_conversion() {
     if (input.slice(0, conv_sign_idx) == 'now') {
       from_date = new Date().getTime();
       to_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`).getTime();
-    } else if (input.slice(conv_sign_idx + 1, conv_sign_idx + 4) == 'now') {
+    } else if ((input.slice(conv_sign_idx + 1, conv_sign_idx + 4) == 'now') && (input.slice(conv_sign_idx + 1) == "") && conversion_depth == 1) {
       to_date = new Date().getTime();
       from_date = new Date(`${date_data[1]}-${date_data[0]}-${date_data[2]}`).getTime();
     } else {
@@ -508,13 +508,13 @@ function date_conversion() {
         let first_value = Math.floor(result / values[idx]);
         let output_value = `${first_value >= 1 ? first_value + (first_value > 1 ?
           ((/[s]$/).test(keys[idx])) ? keys[idx] : keys[idx] + 's' : '') : ''}`;
-        let check = false;
+        let thereIsRemainder = false;
 
         values.reduce((remainder, value, i) => {
           if (idx + 1 === i) {
             check = true;
           }
-          if (check) {
+          if (thereIsRemainder) {
             let next_value = Math.floor(remainder / value);
             output_value += ` ${next_value >= 1 ? next_value + (next_value > 1 ?
               ((/[s]$/).test(keys[i])) ? keys[i] : keys[i] + 's' : '') : ''}`;
@@ -546,8 +546,10 @@ function date_conversion() {
 
     }
   } catch (error) {
-    console.log(error.message)
-    return screenVariables().get_result_area().innerHTML = 'syntaxError';
+    console.log(error.message);
+    return (screenVariables().get_result_area().innerHTML == "" ? "" :
+      screenVariables().get_result_area().innerHTML = 'syntaxError');
+    window.clearInterval(date_conv_interval);
   }
 
 }
@@ -904,7 +906,8 @@ function unit_conversion() {
       : screenVariables().get_result_area().innerHTML = output1 + outUnit + ' or ' + output2 + inUnit;
 
   } catch (error) {
-    screenVariables().get_result_area().innerHTML = 'syntaxError';
+    screenVariables().get_result_area().innerHTML == "" ? "" :
+      screenVariables().get_result_area().innerHTML = 'syntaxError';
     return {
       'error name': error.name,
       'error message': 'Check your inputs'
@@ -969,7 +972,8 @@ function base_conversion() {
 
     screenVariables().get_result_area().innerHTML = output;
   } catch (error) {
-    return screenVariables().get_result_area().innerHTML = 'synError';
+    return (screenVariables().get_result_area().innerHTML == "" ? "" :
+      screenVariables().get_result_area().innerHTML = 'syntaxError');
   }
 
 
@@ -986,6 +990,20 @@ function base_conversion() {
   //if a malicious code is passed, it woulnt reach the eval code.
 }
 
+function romToNum() {
+  try {
+    let input = (screenVariables().get_input_area().innerHTML).trim();
+    let romanInput = input.match(/[0-9]+/gi)[0];
+    romanInput = romanInput.split('');
+
+    let numArray = Object.keys(roman_num_data);
+    let romArray = Object.values(roman_num_data);
+
+    // if(romArray.find())
+  } catch (error) {
+
+  }
+}
 //THIS CODE SWITCHES THE FORMULAR THAT CARRIES OU THE CALCUATION
 function select_calculation() {
   let calc_mode = screenVariables().get_calc_mode().innerHTML;
