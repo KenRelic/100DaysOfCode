@@ -413,6 +413,30 @@ let roman_num_data = {
   900: "CM",
   1000: "M"
 };
+let roman_num_data_2 = {
+  1: "I",
+  2: "II",
+  3: "III",
+  4: "IV",
+  5: "V",
+  9: "IX",
+  10: "X",
+  20: "XX",
+  30: "XXX",
+  40: "XL",
+  50: "L",
+  90: "XC",
+  100: "C",
+  200: "CC",
+  300: "CCC",
+  400: "CD",
+  500: "D",
+  900: "CM",
+  1000: "M",
+  2000: "MM",
+  3000: "MMM"
+};
+
 
 
 function roman_numerals_conversion() {
@@ -422,22 +446,126 @@ function roman_numerals_conversion() {
   let digits = Object.keys(roman_num_data);
   let roman_numerals = Object.values(roman_num_data);
 
-  let value = Number(input.match(/[0-9]+/gi)[0]);
-  if (input.match(/[a-z0-9]+/gi)[1] == 'NROM') {
-    if (!isNaN(value) && value < 9999) {
-      for (let i = digits.length - 1; i >= 0; i -= 1) {
-        while (value >= digits[i]) {
-          result += roman_numerals[i];
-          value -= digits[i];
+  let value = input.split(/→/g)[0];
+  if (input.split(/→/g)[1] == 'NROM') {
+    if (+value) {
+      value = +value;
+      if (value < 3999) {
+        for (let i = digits.length - 1; i >= 0; i -= 1) {
+          while (value >= digits[i]) {
+            result += roman_numerals[i];
+            value -= digits[i];
+          }
         }
+        return output.innerHTML = result;
+      } else {
+        return output.innerHTML = 'Max number is 3999'
       }
-      return output.innerHTML = result;
     } else {
-      return output.innerHTML = 'Out of range'
+      return output.innerHTML = 'syntaxError'
     }
 
-    // }
-  } else if (input.match(/[a-z0-9]+/gi)[1] == 'N') {
+  } else if (input.split(/→/g)[1] == 'N') {
+    if (typeof value == "string") {
+      try {
+        // debugger
+        let input = value;
+        input = input.split('');
+
+        let numArray = Object.keys(roman_num_data_2);
+        let romArray = Object.values(roman_num_data_2);
+
+        let result = 0;
+        let previousNumber = 0;
+
+        for (let i = 0; i < input.length; i += 1) {
+          // debugger
+          if (i > input.length) {
+            return output.innerHTML = result;
+          }
+
+          if (romArray.find(n => n == input[i])) {
+            let currentRomNum = +numArray[romArray.indexOf(input[i])];
+            let nextRomNum = +numArray[romArray.indexOf(input[i + 1])];
+            let nextTwoROM = input[i] + input[i + 1];
+            let nextThreeROM = input[i] + input[i + 1] + input[i + 2];
+
+            console.log(currentRomNum, nextRomNum, nextTwoROM, nextThreeROM);
+
+            if (romArray.includes(nextThreeROM) || romArray.includes(nextTwoROM)) {
+              let romanValue = romArray.includes(nextThreeROM) ? nextThreeROM : nextTwoROM;
+              let roman2Num = +(numArray[romArray.indexOf(romanValue)]);
+              if (previousNumber !== 0 && previousNumber < roman2Num) return output.innerHTML = 'syntaxError';
+
+              result += roman2Num;
+              previousNumber = currentRomNum;
+
+              romArray.splice(romArray.indexOf(nextThreeROM), 1);
+              numArray.splice(romArray.indexOf(nextThreeROM), 1);
+              romArray.splice(romArray.indexOf(nextTwoROM), 1);
+              numArray.splice(romArray.indexOf(nextTwoROM), 1);
+              romArray.splice(romArray.indexOf(input[i]), 1);
+              numArray.splice(romArray.indexOf(input[i]), 1);
+
+              if (romanValue.length == 2) {
+                i += 1;
+              } else {
+                i += 2;
+              }
+
+            } else {
+              if (currentRomNum <= nextRomNum) {
+                if (romArray.includes(nextTwoROM)) {
+                  if (previousNumber) {
+                    if (previousNumber > currentRomNum && previousNumber > (nextRomNum - currentRomNum)) {
+                      result += (nextRomNum - currentRomNum);
+                      previousNumber = nextRomNum - currentRomNum;
+                      romArray.splice(romArray.indexOf(nextTwoROM), 1);
+                      numArray.splice(romArray.indexOf(nextTwoROM), 1);
+                      i += 1;
+                    } else {
+                      return output.innerHTML = 'syntaxError';
+                    }
+                  }else{
+                    result += (nextRomNum - currentRomNum);
+                    previousNumber = nextRomNum - currentRomNum;
+                    romArray.splice(romArray.indexOf(nextTwoROM), 1);
+                    numArray.splice(romArray.indexOf(nextTwoROM), 1);
+                  }
+                } else {
+                  return output.innerHTML = 'syntaxError';
+                }
+              } else {
+                // the current is bigger than the next
+                if (previousNumber) {
+                  if (previousNumber > currentRomNum) {
+                    result += currentRomNum;
+                    previousNumber = currentRomNum;
+                    romArray.splice(romArray.indexOf(input[i]), 1);
+                    numArray.splice(romArray.indexOf(input[i]), 1);
+                  } else {
+                    return output.innerHTML = 'syntaxError';
+                  }
+                } else {
+                  result += currentRomNum;
+                  previousNumber = currentRomNum;
+                  romArray.splice(romArray.indexOf(input[i]), 1);
+                  numArray.splice(romArray.indexOf(input[i]), 1);
+                }
+              }
+            }
+          } else {
+            return output.innerHTML = 'syntaxError'
+          }
+        }
+        return output.innerHTML = result;
+      } catch (error) {
+        return output.innerHTML = 'syntaxError'
+      }
+
+    } else {
+      return output.innerHTML = 'syntaxError'
+    }
 
   } else {
     return output.innerHTML = 'syntaxError'
@@ -999,11 +1127,32 @@ function romToNum() {
     let numArray = Object.keys(roman_num_data);
     let romArray = Object.values(roman_num_data);
 
-    // if(romArray.find())
-  } catch (error) {
+    let result = 0;
 
+    for (let i = 0; i < romanInput.length; i += 1) {
+      if (i > romanInput.length) {
+        return screenVariables().get_result_area().innerHTML = result
+      }
+
+      if (romArray.find(n => n == romanInput[i])) {
+        let currentRomNum = numArray[romArray.indexOf(romanInput[i])];
+        let nextRomNum = numArray[romArray.indexOf(romanInput[i + 1])];
+        if (currentRomNum < nextRomNum) {
+          result += (nextRomNum - currentRomNum);
+          i += 1;
+        } else {
+          result += currentRomNum;
+        }
+      } else {
+        return screenVariables().get_result_area().innerHTML = 'syntaxError';
+      }
+    }
+
+  } catch (error) {
+    return screenVariables().get_result_area().innerHTML = 'syntaxError';
   }
 }
+
 //THIS CODE SWITCHES THE FORMULAR THAT CARRIES OU THE CALCUATION
 function select_calculation() {
   let calc_mode = screenVariables().get_calc_mode().innerHTML;
