@@ -7,6 +7,10 @@ let inner_pad = document.querySelector("#direction-pad > div");
 direction_pad = Array.from(direction_pad.children);
 let date_conv_interval = undefined;
 
+let cursorPosition = 0;
+let cursorPositionIndex = 0;
+let blinkingCursor = document.getElementById('blinking-cursor');
+
 direction_pad.forEach(direction => {
   direction.addEventListener("click", () => {
     // this code is responisble for the display of the shadow from each direction
@@ -16,18 +20,22 @@ direction_pad.forEach(direction => {
         directionPadAnimation("0 3px 0 1px #2f2f2f", "inset 0 2px 0 2px #1f1f1f, 0 0 20px 1px black");
       case "right-btn":
         directionPadAnimation("-3px 0 0 1px #2f2f2f", "inset -2px 0 0 2px #1f1f1f, 0 0 20px 1px black");
+        moveCursor().right();;
         break;
       case "down-btn":
         directionPadAnimation("0 -3px 0 1px #2f2f2f", "inset 0 -2px 0 2px #1f1f1f, 0 0 20px 1px black");
         break;
       case "left-btn":
         directionPadAnimation("3px 0 0 1px #2f2f2f", "inset 2px 0 0 2px #1f1f1f, 0 0 20px 1px black");
+        moveCursor().left();;
         break;
       default:
         break;
     }
   });
 });
+
+
 
 function directionPadAnimation(outerBoxShadow, innerBoxShadow) {
   calc_direction_pad.style.boxShadow = outerBoxShadow;
@@ -64,6 +72,7 @@ function button_effect(e) {
 
 //set the power state to OFF on load.
 window.onload = function () {
+  batteryStatus();
   let localStorage = window.localStorage;
   localStorage.setItem("power_state", "OFF");
 
@@ -100,6 +109,7 @@ power_btn.addEventListener("click", () => {
   screenVariables().get_result_area().style.visibility =
     state_data[localStorage.power_state][0];
 
+  resetCusor();
   if (localStorage.power_state == 'OFF') {
     screenVariables().get_conv_mode().style.visibility = 'hidden';
     screenVariables().get_calc_mode().innerHTML = 'date';
@@ -128,6 +138,135 @@ function screenVariables() {
   };
 }
 
+function moveCursor() {
+  let displayed_text = screenVariables().get_input_area().innerHTML;
+  let units = [
+    "sqft"
+  ];
+
+  return {
+    left: () => {
+      // let movLeftOverSubSuperscript = () => (screenVariables().get_input_area()).removeChild((screenVariables().get_input_area()).lastElementChild);
+      // let moveLeftOverUnits = (i) => displayed_text.slice(0, displayed_text.length - units[i].length);
+      // let moveLeftOnce = () => displayed_text.slice(0, displayed_text.length - 1);
+      // lookAhead(moveLeftOverUnits, movLeftOverSubSuperscript, moveLeftOnce, units, displayed_text)
+      moveBlinkingCursor('left', displayed_text, units)
+    },
+    right: () => {
+      moveBlinkingCursor('right', displayed_text, units)
+    },
+    down: () => {
+
+    },
+    up: () => {
+
+    }
+  }
+}
+
+function moveBlinkingCursor(direction, displayed_text, units) {
+  // issue is from the cursorpositionindex, it doesnt subtract on the first left click it 
+
+  let displayedInnerText = screenVariables().get_input_area().innerText;
+  cursorPositionIndex = cursorPositionIndex == 0 && cursorPosition == ""
+    ? displayedInnerText.length : cursorPositionIndex;
+  let isLastOrFirst;
+  switch (direction) {
+    case 'left':
+      debugger
+
+      isLastOrFirst = blinkingCursor.style.right === "" && cursorPositionIndex === 0 ? false
+        : cursorPositionIndex === displayedInnerText.length
+          ? true : cursorPosition === 0 && cursorPositionIndex !== 0 ? true : cursorPositionIndex !== 0 ? true : false;
+      console.log(isLastOrFirst, displayedInnerText.length, cursorPositionIndex)
+      switch (isLastOrFirst) {
+        case true:
+          let i;
+          for (i = 0; i < units.length; i += 1) {
+            if (displayed_text.endsWith(units[i])) {
+              console.log(cursorPosition);
+              cursorPosition = cursorPosition ? (+(cursorPosition.replace('px', '')) + (units[i].length * 8.8)) + 'px'
+                : (cursorPosition + (units[i].length * 8.8)) + 'px';
+              cursorPositionIndex -= units[i].length;
+              blinkingCursor.style.right = cursorPosition;
+              console.log(cursorPositionIndex, cursorPosition)
+              break;
+            };
+          };
+          if (displayed_text.endsWith('>')) {
+            let n = (displayed_text.match(/<[\w]+>[\w]+<\/[\w]+>/gi)[displayed_text.match(/<[\w]+>[\w]+<\/[\w]+>/gi)
+              .length - 1]).replace(/(<\/[\w]+>)|(<[\w]+>)/gi, '').length;
+            cursorPosition = cursorPosition ? (+(cursorPosition.replace('px', '')) + (n * 8.8)) + 'px' : '';
+            cursorPositionIndex -= n;
+            blinkingCursor.style.right = cursorPosition;
+            console.log(cursorPositionIndex, cursorPosition)
+            break;
+          };
+          cursorPosition = (+((blinkingCursor.style.right).replace('px', '')) + 8.8) + 'px';
+          if (blinkingCursor.style.right === "") cursorPosition = 0;
+          cursorPositionIndex -= 1;
+          blinkingCursor.style.right = cursorPosition;
+
+          console.log(blinkingCursor.style.right);
+          console.log(cursorPositionIndex, cursorPosition)
+          break;
+        default:
+          //do nothing
+          break;
+      }
+      break;
+    default:
+      //for right direction
+      // debugger
+      isLastOrFirst = cursorPositionIndex !== displayedInnerText.length
+        ? true : cursorPosition !== "" ? true : false;
+      console.log(isLastOrFirst, displayedInnerText.length, cursorPositionIndex)
+      switch (isLastOrFirst) {
+        case true:
+          let i;
+          for (i = 0; i < units.length; i += 1) {
+            if (displayed_text.endsWith(units[i])) {
+              cursorPosition = cursorPosition ? (+(cursorPosition.replace('px', '')) - (units[i].length * 8.8)) + 'px'
+                : (cursorPosition - (units[i].length * 8.8)) + 'px';
+              cursorPositionIndex += units[i].length;
+              blinkingCursor.style.right = cursorPosition;
+              console.log(cursorPositionIndex, cursorPosition)
+              break;
+            };
+          };
+          if (displayed_text.endsWith('>')) {
+            let n = (displayed_text.match(/<[\w]+>[\w]+<\/[\w]+>/gi)[displayed_text.match(/<[\w]+>[\w]+<\/[\w]+>/gi)
+              .length - 1]).replace(/(<\/[\w]+>)|(<[\w]+>)/gi, '').length;
+            cursorPosition = cursorPosition ? (+(cursorPosition.replace('px', '')) - (n * 8.8)) + 'px' : '';
+            cursorPositionIndex += n;
+            blinkingCursor.style.right = cursorPosition;
+            console.log(cursorPositionIndex, cursorPosition)
+            break;
+          };
+
+          cursorPosition = (+((blinkingCursor.style.right).replace('px', '')) - 8.8) + 'px';
+          cursorPosition = cursorPosition === '0px' ? 0 : cursorPosition;
+
+          if (cursorPosition === "-8.8px") cursorPosition = "";
+          if (cursorPosition !== "") cursorPositionIndex += 1;
+          if (cursorPosition === "") cursorPositionIndex = displayedInnerText.length;
+          blinkingCursor.style.right = cursorPosition;
+
+          console.log(blinkingCursor.style.right);
+          console.log(cursorPositionIndex, cursorPosition)
+          break;
+        default:
+          //do nothing
+          break
+      }
+      break;
+  }
+}
+function resetCusor() {
+  cursorPositionIndex = 0;
+  cursorPosition = 0;
+  blinkingCursor.style.right = "";
+}
 //COLOR MODES CODE///////
 //get the root element and pass the values for the selected mode
 // default mode is dark-mode.. on click of the color-mode btn
@@ -169,7 +308,7 @@ let color_modes_data = {
 
 const color_mode_toggle_btn = document.getElementById("color-mode");
 color_mode_toggle_btn.addEventListener("click", () => {
-  current_color_mode = current_color_mode == "dark" ? "light" : "dark";
+  current_color_mode = current_color_mode === "dark" ? "light" : "dark";
   let i;
   for (i = 0; i < color_mode_props.length; i += 1) {
     document.documentElement.style.setProperty(
@@ -183,13 +322,14 @@ function key_press_active() {
   let button = document.getElementById("other-keys");
   button.onclick = function (event) {
     let el = event.target;
-    if (localStorage.power_state == "ON") {
+    if (localStorage.power_state === "ON") {
       if (el.dataset.value) {
-        if (el.dataset.value == "Backspace") erase_input();
-        else if (el.dataset.value == "equal") {
+        if (el.dataset.value === "Backspace") erase_input();
+        else if (el.dataset.value === "equal") {
         } else {
           screenVariables().get_input_area().innerHTML += el.dataset.value;
           input_handler().set_input(el.dataset.value);
+          cursorPositionIndex = screenVariables().get_input_area().innerText.length;
         };
       };
     };
@@ -214,7 +354,7 @@ function batteryStatus() {
         for (let i = 0; i < num_of_full_bars; i += 1) {
           battery[i].style = 'background:linear-gradient( 270deg,rgb(62, 255, 156) 100%, rgb(35, 46, 40) 0%)';
         }
-        remnant_bar == 0 ? ''
+        remnant_bar === 0 ? ''
           : battery[num_of_full_bars].style = ` background:linear-gradient( 270deg,rgb(62, 255, 156) ${remnant_bar}%, rgb(35, 46, 40) ${remnant_bar}%)`
       }, 1000);
     }, 1000);
@@ -225,7 +365,7 @@ function batteryStatus() {
   }
 };
 
-batteryStatus();
+
 
 function input_handler() {
   let inputed_data;
@@ -302,25 +442,47 @@ function erase_input() {
     "<sub>10</sub>",
     "<sub>16</sub>"
   ];
-  let i;
 
+  let eraseSubSuperScripts = () => {
+    // if ends with >
+    let n = (displayed_text.match(/<[\w]+>[\w]+<\/[\w]+>/gi)[displayed_text.match(/<[\w]+>[\w]+<\/[\w]+>/gi)
+      .length - 1]).replace(/(<\/[\w]+>)|(<[\w]+>)/gi, '').length
+    cursorPositionIndex -= n;
+    cursorPosition = cursorPosition ? (+(cursorPosition.replace('px', '')) - (n * 8.8)) + 'px' : '';
+    cursorPositionIndex -= n;
+    return (screenVariables().get_input_area()).removeChild((screenVariables().get_input_area()).lastElementChild);
+  };
+  let eraseUnitsAbove2 = (i) => {
+    cursorPositionIndex -= units[i].length;
+    cursorPosition = cursorPosition ? (+(cursorPosition.replace('px', '')) - (units[i].length * 8.8)) + 'px'
+      : (cursorPosition - (units[i].length * 8.8)) + 'px';
+    cursorPositionIndex -= units[i].length
+    return displayed_text.slice(0, displayed_text.length - units[i].length)
+  };
+  let eraseSingleUnit = () => {
+    cursorPositionIndex -= 1;
+    cursorPosition = (+((blinkingCursor.style.right).replace('px', '')) - 8.8) + 'px';
+    if (blinkingCursor.style.right === "") cursorPosition = 0;
+
+    return displayed_text.slice(0, displayed_text.length - 1);
+  };
+
+  lookAhead(eraseUnitsAbove2, eraseSubSuperScripts, eraseSingleUnit, units, displayed_text);
+}
+
+
+function lookAhead(action1, action2, action3, units, displayed_text) {
+  let i;
   for (i = 0; i < units.length; i += 1) {
     if (displayed_text.endsWith(units[i])) {
-      return (screenVariables().get_input_area().innerHTML = displayed_text.slice(
-        0,
-        displayed_text.length - units[i].length
-      ));
-    }
-  }
+      return (screenVariables().get_input_area().innerHTML = action1(i));
+    };
+  };
   if (screenVariables().get_input_area().innerHTML.endsWith('>')) {
-    return (screenVariables().get_input_area()).removeChild((screenVariables().get_input_area()).lastElementChild);
-  }
-
-  return (screenVariables().get_input_area().innerHTML = displayed_text.slice(
-    0,
-    displayed_text.length - 1
-  ));
-}
+    return action2();
+  };
+  return (screenVariables().get_input_area().innerHTML = action3());
+};
 
 //CLEAR EVERYTHING BUTTON CODE
 //Clears  all input data and any previous result still displayed
@@ -330,7 +492,7 @@ clear_all_btn.addEventListener("click", clear_all);
 // clear on press of delete key
 window.onkeydown = function (event) {
   let el = event.which || event.keyCode;
-  console.log(el);
+  // console.log(el);
   if (el === 46) return clear_all();
   if (el === 8) return erase_input();
 
@@ -338,6 +500,7 @@ window.onkeydown = function (event) {
 function clear_all() {
   screenVariables().get_input_area().innerHTML = "";
   screenVariables().get_result_area().innerHTML = "0";
+  resetCusor();
 }
 
 //Display calculation mode//
@@ -526,7 +689,7 @@ function roman_numerals_conversion() {
                     } else {
                       return output.innerHTML = 'syntaxError';
                     }
-                  }else{
+                  } else {
                     result += (nextRomNum - currentRomNum);
                     previousNumber = nextRomNum - currentRomNum;
                     romArray.splice(romArray.indexOf(nextTwoROM), 1);
@@ -1053,6 +1216,7 @@ function base_conversion() {
   let output = '';
   let number_of_elem = input_nodes.length;
   let base_of_result = '';
+  console.log(input_nodes)
 
   if (input.innerText.includes('→')) {
     base_of_result = input.innerText.slice((input.innerText.indexOf('N')) + 1);
@@ -1080,7 +1244,8 @@ function base_conversion() {
           default:
             break;
         }
-        if (number_of_elem - 1 > i && input_nodes[i + 1].constructor == HTMLElement) {
+        if (number_of_elem - 1 > i && input_nodes[i + 1].constructor === HTMLElement) {
+          console.log(input_nodes[i + 1])
           output += parseInt((input_nodes[i].textContent).replace(/[\-\+\×\/N]/gi, ''), input_nodes[i + 1].textContent);
           i += 1;
         } else {
@@ -1090,6 +1255,9 @@ function base_conversion() {
     }
     //EVAL OPENS DOOR TO SECURITY ISSUES... but the code running has zero user input influence
     //if a malicious code is passed, it woulnt reach the eval code.
+    output = Array.from(output)
+    // output = eval(output);
+    console.log(output.split(/[\/\+\-\*]/gi))
     output = (eval(output)).toString() == 'NaN' ? 'syntaxError' : eval(output);
     output == 'syntaxError' ? base_of_result = '' : '';
 
